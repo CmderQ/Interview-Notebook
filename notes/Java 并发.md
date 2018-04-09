@@ -76,11 +76,11 @@
 
 ## 无限期等待（Waiting）
 
-等待其它线程显示地唤醒，否则不会被分配 CPU 时间片；
+等待其它线程显式地唤醒，否则不会被分配 CPU 时间片。
 
 | 进入方法 | 退出方法 |
 | --- | --- |
-| 没有设置 Timeout 参数的 Object.wait() 方法 | Object.notify()  Object.notifyAll() |
+| 没有设置 Timeout 参数的 Object.wait() 方法 | Object.notify() / Object.notifyAll() |
 | 没有设置 Timeout 参数的 Thread.join() 方法 | 被调用的线程执行完毕 |
 | LockSupport.park() 方法 | - |
 
@@ -88,10 +88,14 @@
 
 无需等待其它线程显示地唤醒，在一定时间之后会被系统自动唤醒。
 
+调用 Thread.sleep() 方法使线程进入限期等待状态时，常常用“使一个线程睡眠”进行描述。
+
+调用 Object.wait() 方法使线程进入限期等待或者无限期等待时，常常用“挂起一个线程”进行描述。
+
 | 进入方法 | 退出方法 |
 | --- | --- |
 | Thread.sleep() 方法 | 时间结束 |
-| 设置了 Timeout 参数的 Object.wait() 方法 | 时间结束 / Object.notify()  Object.notifyAll()  |
+| 设置了 Timeout 参数的 Object.wait() 方法 | 时间结束 / Object.notify() / Object.notifyAll()  |
 | 设置了 Timeout 参数的 Thread.join() 方法 | 时间结束 / 被调用的线程执行完毕 |
 | LockSupport.parkNanos() 方法 | - |
 | LockSupport.parkUntil() 方法 | - |
@@ -547,7 +551,7 @@ ReentrantLock 多了一些高级功能。
 
 # 六、线程之间的协作
 
-当多个线程可以一起工作去解决某个问题时，需要对它们进行协调，因为某些部分必须在其它部分之前完成。
+当多个线程可以一起工作去解决某个问题时，如果某些部分必须在其它部分之前完成，那么就需要对线程进行协调。
 
 ## join()
 
@@ -611,7 +615,7 @@ B
 
 只能用在同步方法或者同步控制块中使用，否则会在运行时抛出 IllegalMonitorStateExeception。
 
-使用 wait() 挂起期间，线程会释放锁。这是因为，如果没有释放锁，那么其它线程就无法进入对象的同步方法或者同步控制块中，那么就无法执行 notify() 或者 notifyAll() 来唤醒挂起的线程。
+使用 wait() 挂起期间，线程会释放锁。这是因为，如果没有释放锁，那么其它线程就无法进入对象的同步方法或者同步控制块中，那么就无法执行 notify() 或者 notifyAll() 来唤醒挂起的线程，造成死锁。
 
 ```java
 public class WaitNotifyExample {
@@ -645,12 +649,12 @@ after
 
 **wait() 和 sleep() 的区别** 
 
-1. wait() 是 Object 类的方法，而 sleep() 是 Thread 的静态方法；
+1. wait() 是 Object 的方法，而 sleep() 是 Thread 的静态方法；
 2. wait() 会释放锁，sleep() 不会。
 
 ## await() signal() signalAll()
 
-java.util.confurrent 类库中提供了 Condition 类来实现线程之间的协调，可以在 Condition 上调用 await() 方法时线程等待，其它线程调用 signal() 或 signalAll() 方法唤醒挂起的线程。
+java.util.concurrent 类库中提供了 Condition 类来实现线程之间的协调，可以在 Condition 上调用 await() 方法使线程等待，其它线程调用 signal() 或 signalAll() 方法唤醒等待的线程。相比于 wait() 这种等待方式，await() 可以指定等待的条件，因此更加灵活。
 
 使用 Lock 来获取一个 Condition 对象。
 
@@ -688,6 +692,11 @@ public class AwaitSignalExample {
         executorService.execute(() -> example.before());
     }
 }
+```
+
+```html
+before
+after
 ```
 
 # 七、J.U.C - AQS
@@ -730,7 +739,7 @@ run..run..run..run..run..run..run..run..run..run..end
 
 用来控制多个线程互相等待，只有当多个线程都到达时，这些线程才会继续执行。
 
-和 CountdownLatch 相似，都是通过维护计数器来实现的。但是它的计数器是递增的，每次执行 await() 方法之后，计数器会加 1，直到计数器的值和设置的值相等，等待的所有线程才会继续执行。和 CountdownLatch 的另一个区别是 CyclicBarrier 的计数器可以循环使用，所以它才叫做循环屏障。
+和 CountdownLatch 相似，都是通过维护计数器来实现的。但是它的计数器是递增的，每次执行 await() 方法之后，计数器会加 1，直到计数器的值和设置的值相等，等待的所有线程才会继续执行。和 CountdownLatch 的另一个区别是，CyclicBarrier 的计数器可以循环使用，所以它才叫做循环屏障。
 
 下图应该从下往上看才正确。
 
@@ -738,6 +747,7 @@ run..run..run..run..run..run..run..run..run..run..end
 
 ```java
 public class CyclicBarrierExample {
+
     public static void main(String[] args) throws InterruptedException {
         final int totalTread = 10;
         CyclicBarrier cyclicBarrier = new CyclicBarrier(totalTread);
@@ -770,7 +780,7 @@ Semaphore 就是操作系统中的信号量，可以控制对互斥资源的访�
 
 <div align="center"> <img src="../pics//Semaphore.png"/> </div><br>
 
-以下代码模拟了对某个服务的并发请求，每次只能由 3 个客户端同时访问，请求总数为 10。
+以下代码模拟了对某个服务的并发请求，每次只能有 3 个客户端同时访问，请求总数为 10。
 
 ```java
 public class SemaphoreExample {
@@ -803,7 +813,7 @@ public class SemaphoreExample {
 
 ## FutureTask
 
-在介绍 Callable 时我们知道它可以有返回值，返回值通过 Future 进行封装。FutureTask 实现了 RunnableFuture 接口，该接口继承自 Runnable 和 Future<V> 接口，这使得 FutureTask 既可以当做一个任务执行，也可以有返回值。
+在介绍 Callable 时我们知道它可以有返回值，返回值通过 Future<V> 进行封装。FutureTask 实现了 RunnableFuture 接口，该接口继承自 Runnable 和 Future<V> 接口，这使得 FutureTask 既可以当做一个任务执行，也可以有返回值。
 
 ```java
 public class FutureTask<V> implements RunnableFuture<V>
@@ -813,7 +823,7 @@ public class FutureTask<V> implements RunnableFuture<V>
 public interface RunnableFuture<V> extends Runnable, Future<V>
 ```
 
-当一个计算任务需要执行很长时间，那么就可以用 FutureTask 来封装这个任务，用一个线程去执行该任务，然后执行其它任务。当需要该任务的计算结果时，再通过 FutureTask 的 get() 方法获取。
+当一个计算任务需要执行很长时间，那么就可以用 FutureTask 来封装这个任务，用一个线程去执行该任务，然后其它线程继续执行其它任务。当需要该任务的计算结果时，再通过 FutureTask 的 get() 方法获取。
 
 ```java
 public class FutureTaskExample {
@@ -864,86 +874,114 @@ java.util.concurrent.BlockingQueue 接口有以下阻塞队列的实现：
 **使用 BlockingQueue 实现生产者消费者问题** 
 
 ```java
-// 生产者
-public class Producer implements Runnable {
-    private BlockingQueue<String> queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
-    public Producer(BlockingQueue<String> queue) {
-        this.queue = queue;
-    }
+public class ProducerConsumer {
 
-    @Override
-    public void run() {
-        System.out.println(Thread.currentThread().getName() + " is making product.");
-        String product = "Made By " + Thread.currentThread().getName();
-        try {
-            queue.put(product);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    private static BlockingQueue<String> queue = new ArrayBlockingQueue<>(5);
+
+    private static class Producer extends Thread {
+        @Override
+        public void run() {
+            try {
+                queue.put("product");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.print("produce..");
         }
     }
-}
-```
 
-```java
-// 消费者
-public class Consumer implements Runnable {
-    private BlockingQueue<String> queue;
+    private static class Consumer extends Thread {
 
-    public Consumer(BlockingQueue<String> queue) {
-        this.queue = queue;
-    }
-
-    @Override
-    public void run() {
-        try {
-            String product = queue.take();
-            System.out.println(Thread.currentThread().getName() + " is consuming product." + "( " + product + " )");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        @Override
+        public void run() {
+            try {
+                String product = queue.take();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.print("consume..");
         }
     }
-}
-```
 
-```java
-// 客户端
-public class Client {
     public static void main(String[] args) {
-        BlockingQueue<String> queue = new LinkedBlockingQueue<>(5);
         for (int i = 0; i < 2; i++) {
-            new Thread(new Consumer(queue), "Consumer-" + i).start();
+            Producer producer = new Producer();
+            producer.start();
         }
         for (int i = 0; i < 5; i++) {
-            // 只有两个 Product，因此只能消费两个，其它三个消费者被阻塞
-            new Thread(new Producer(queue), "Producer-" + i).start();
+            Consumer consumer = new Consumer();
+            consumer.start();
         }
-        for (int i = 2; i < 5; i++) {
-            new Thread(new Consumer(queue), "Consumer-" + i).start();
+        for (int i = 0; i < 3; i++) {
+            Producer producer = new Producer();
+            producer.start();
         }
     }
 }
 ```
 
 ```html
-// 运行结果
-Producer-0 is making product.
-Consumer-0 is consuming product.( Made By Producer-0 )
-Producer-1 is making product.
-Consumer-1 is consuming product.( Made By Producer-1 )
-Producer-2 is making product.
-Producer-3 is making product.
-Producer-4 is making product.
-Consumer-2 is consuming product.( Made By Producer-2 )
-Consumer-3 is consuming product.( Made By Producer-3 )
-Consumer-4 is consuming product.( Made By Producer-4 )
+produce..produce..consume..consume..produce..consume..produce..consume..produce..consume..
 ```
-
 
 ## ForkJoin
 
-// TODO
+主要用于并行计算中，和 MapReduce 原理类似，都是把大的计算任务拆分成多个小任务并行计算。
 
+```java
+public class ForkJoinExample extends RecursiveTask<Integer> {
+    private final int threhold = 5;
+    private int first;
+    private int last;
+
+    public ForkJoinExample(int first, int last) {
+        this.first = first;
+        this.last = last;
+    }
+
+    @Override
+    protected Integer compute() {
+        int result = 0;
+        if (last - first <= threhold) {
+            // 任务足够小则直接计算
+            for (int i = first; i <= last; i++) {
+                result += i;
+            }
+        } else {
+            // 拆分成小任务
+            int middle = first + (last - first) / 2;
+            ForkJoinExample leftTask = new ForkJoinExample(first, middle);
+            ForkJoinExample rightTask = new ForkJoinExample(middle + 1, last);
+            leftTask.fork();
+            rightTask.fork();
+            result = leftTask.join() + rightTask.join();
+        }
+        return result;
+    }
+}
+```
+
+```java
+public static void main(String[] args) throws ExecutionException, InterruptedException {
+    ForkJoinExample example = new ForkJoinExample(1, 10000);
+    ForkJoinPool forkJoinPool = new ForkJoinPool();
+    Future result = forkJoinPool.submit(example);
+    System.out.println(result.get());
+}
+```
+
+ForkJoin 使用 ForkJoinPool 来启动，它是一个特殊的线程池，线程数量取决于 CPU 核数。
+
+```java
+public class ForkJoinPool extends AbstractExecutorService
+```
+
+ForkJoinPool 实现了工作窃取算法来提高 CPU 的利用率。每个线程都维护了一个双端队列，用来存储需要执行的任务。工作窃取算法允许空闲的线程从其它线程的双端队列中窃取一个任务来执行。窃取的任务必须是最晚的任务，避免和队列所属线程发生竞争。例如下图中，Thread2 从 Thread1 的队列中拿出最晚的 Task1 任务，Thread1 会拿出 Task2 来执行，这样就避免发生竞争。但是如果队列中只有一个任务时还是会发生竞争。
+
+<div align="center"> <img src="../pics//15b45dc6-27aa-4519-9194-f4acfa2b077f.jpg"/> </div><br>
 
 # 九、线程不安全示例
 
@@ -1023,13 +1061,13 @@ Java 内存模型定义了 8 个操作来完成主内存和工作内存的交互
 
 ### 1. 原子性
 
-Java 内存模型允许虚拟机将没有被 volatile 修饰的 64 位数据（long，double）的读写操作划分为两次 32 位的操作来进行，也就是说对这部分数据的操作可以不具备原子性。
+Java 内存模型保证了 read、load、use、assign、store、write、lock 和 unlock 操作具有原子性，例如对一个 int 类型的变量执行 assign 赋值操作，这个操作就是原子性的。但是 Java 内存模型允许虚拟机将没有被 volatile 修饰的 64 位数据（long，double）的读写操作划分为两次 32 位的操作来进行，即 load、store、read 和 write 操作可以不具备原子性。
 
 有一个错误认识就是，int 等原子性的变量在多线程环境中不会出现线程安全问题。前面的线程不安全示例代码中，cnt 变量属于 int 类型变量，1000 个线程对它进行自增操作之后，得到的值为 997 而不是 1000。
 
 为了方便讨论，将内存间的交互操作简化为 3 个：load、assign、store。
 
-下图演示了两个线程同时对 cnt 变量进行操作，load、assign、store 这一系列操作不具备原子性，那么在 T1 修改 cnt 并且还没有将修改后的值写入主内存，T2 依然可以读入该变量的值。可以看出，这两个线程虽然执行了两次自增运算，但是主内存中 cnt 的值最后为 1 而不是 2。因此对 int 类型读写操作满足原子性只是说明 load、assign、store 这些单个操作具备原子性。
+下图演示了两个线程同时对 cnt 变量进行操作，load、assign、store 这一系列操作整体上看不具备原子性，那么在 T1 修改 cnt 并且还没有将修改后的值写入主内存，T2 依然可以读入该变量的值。可以看出，这两个线程虽然执行了两次自增运算，但是主内存中 cnt 的值最后为 1 而不是 2。因此对 int 类型读写操作满足原子性只是说明 load、assign、store 这些单个操作具备原子性。
 
 <div align="center"> <img src="../pics//ef8eab00-1d5e-4d99-a7c2-d6d68ea7fe92.png"/> </div><br>
 
@@ -1115,6 +1153,10 @@ public class AtomicSynchronizedExample {
 可见性指当一个线程修改了共享变量的值，其它线程能够立即得知这个修改。Java 内存模型是通过在变量修改后将新值同步回主内存，在变量读取前从主内存刷新变量值来实现可见性的。
 
 volatile 可保证可见性。synchronized 也能够保证可见性，对一个变量执行 unlock 操作之前，必须把变量值同步回主内存。final 关键字也能保证可见性：被 final 关键字修饰的字段在构造器中一旦初始化完成，并且没有发生 this 逃逸（其它线程可以通过 this 引用访问到初始化了一般的对象），那么其它线程就能看见 final 字段的值。
+
+对前面的线程不安全示例中的 cnt 变量用 volatile 修饰，不能解决线程不安全问题。因为 volatile 并不能保证操作的原子性。
+
+// TODO：volatile 不能解决线程不安全问题的示例代码。
 
 ### 3. 有序性
 
@@ -1583,13 +1625,19 @@ public static String concatString(String s1, String s2, String s3) {
 
 # 十三、多线程开发良好的实践
 
-1. 给线程起个有意义的名字，这样可以方便找 Bug；
+- 给线程起个有意义的名字，这样可以方便找 Bug。
 
-2. 因为锁花费的代价很高，应该尽可能减小同步范围；
+- 缩小同步范围，例如 对于 synchronized，应该尽量使用同步块而不是同步方法。
 
-3. 多用同步类少用 wait 和 notify。首先，CountDownLatch, Semaphore, CyclicBarrier 和 Exchanger 这些同步类简化了编码操作，而用 wait 和 notify 很难实现对复杂控制流的控制。其次，这些类是由最好的企业编写和维护在后续的 JDK 中它们还会不断优化和完善，使用这些更高等级的同步工具你的程序可以不费吹灰之力获得优化。
+- 多用同步类少用 wait 和 notify。首先，CountDownLatch, Semaphore, CyclicBarrier 和 Exchanger 这些同步类简化了编码操作，而用 wait 和 notify 很难实现对复杂控制流的控制。其次，这些类是由最好的企业编写和维护在后续的 JDK 中它们还会不断优化和完善，使用这些更高等级的同步工具你的程序可以不费吹灰之力获得优化。
 
-4. 多用并发集合少用同步集合。并发集合比同步集合的可扩展性更好，例如应该使用 ConcurrentHashMap 而不是 Hashttable。
+- 多用并发集合少用同步集合。并发集合比同步集合的可扩展性更好，例如应该使用 ConcurrentHashMap 而不是 Hashttable。
+
+- 使用本地变量和不可变类来保证线程安全。
+
+- 使用线程池而不是直接创建 Thread 对象，这是因为创建线程代价很高，线程池可以有效地利用有限的线程来启动任务。
+
+- 使用 BlockingQueue 实现生产者消费者问题。
 
 # 参考资料
 
@@ -1605,3 +1653,5 @@ public static String concatString(String s1, String s2, String s3) {
 - [6장 Thread Synchronization](https://www.slideshare.net/novathinker/6-thread-synchronization)
 - [How is Java's ThreadLocal implemented under the hood?](https://stackoverflow.com/questions/1202444/how-is-javas-threadlocal-implemented-under-the-hood/15653015)
 - [Concurrent](https://sites.google.com/site/webdevelopart/21-compile/06-java/javase/concurrent?tmpl=%2Fsystem%2Fapp%2Ftemplates%2Fprint%2F&showPrintDialog=1)
+- [JAVA FORK JOIN EXAMPLE](http://www.javacreed.com/java-fork-join-example/ "Java Fork Join Example")
+- [聊聊并发（八）——Fork/Join 框架介绍](http://ifeve.com/talk-concurrency-forkjoin/)
