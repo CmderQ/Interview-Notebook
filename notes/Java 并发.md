@@ -794,9 +794,10 @@ public class SemaphoreExample {
                 try {
                     semaphore.acquire();
                     System.out.print(semaphore.availablePermits() + " ");
-                    semaphore.release();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                } finally {
+                    semaphore.release();
                 }
             });
         }
@@ -1413,7 +1414,7 @@ ABA ：如果一个变量 V 初次读取的时候是 A 值，它的值被改成�
 
 **（二）栈封闭** 
 
-多个线程方法同一个方法的局部变量时，不会出现线程安全问题，因为局部变量存储在栈中，属于线程私有的。
+多个线程访问同一个方法的局部变量时，不会出现线程安全问题，因为局部变量存储在栈中，属于线程私有的。
 
 ```java
 import java.util.concurrent.ExecutorService;
