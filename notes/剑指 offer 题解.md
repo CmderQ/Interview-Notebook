@@ -1776,17 +1776,15 @@ public int MoreThanHalfNum_Solution(int[] nums) {
 
 快速排序的 partition() 方法，会返回一个整数 j 使得 a[l..j-1] 小于等于 a[j]，且 a[j+1..h] 大于等于 a[j]，此时 a[j] 就是数组的第 j 大元素。可以利用这个特性找出数组的第 K 个元素，这种找第 K 个元素的算法称为快速选择算法。
 
-找到第 K 个元素之后，就可以再遍历一次数组，所有小于等于该元素的数组元素都是最小的 K 个数。
-
 ```java
 public ArrayList<Integer> GetLeastNumbers_Solution(int[] nums, int k) {
-    if (k > nums.length || k <= 0)
-        return new ArrayList<>();
-    int kthSmallest = findKthSmallest(nums, k - 1);
     ArrayList<Integer> ret = new ArrayList<>();
-    for (int val : nums)
-        if (val <= kthSmallest && ret.size() < k)
-            ret.add(val);
+    if (k > nums.length || k <= 0)
+        return ret;
+    int kthSmallest = findKthSmallest(nums, k - 1);
+    // findKthSmallest 会让改变数组，使得前 k 个数都是最小的 k 个数
+    for (int i = 0; i < k; i++)
+        ret.add(nums[i]);
     return ret;
 }
 
@@ -1805,10 +1803,12 @@ public int findKthSmallest(int[] nums, int k) {
 }
 
 private int partition(int[] nums, int l, int h) {
+    // 切分元素
+    int parti = nums[l];
     int i = l, j = h + 1;
     while (true) {
-        while (i < h && nums[++i] < nums[l]) ;
-        while (j > l && nums[l] < nums[--j]) ;
+        while (i != h && nums[++i] < parti) ;
+        while (j != l && nums[--j] > parti) ;
         if (i >= j)
             break;
         swap(nums, i, j);
@@ -1818,7 +1818,9 @@ private int partition(int[] nums, int l, int h) {
 }
 
 private void swap(int[] nums, int i, int j) {
-    int t = nums[i]; nums[i] = nums[j]; nums[j] = t;
+    int t = nums[i];
+    nums[i] = nums[j];
+    nums[j] = t;
 }
 ```
 
