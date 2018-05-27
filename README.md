@@ -42,6 +42,10 @@
 
 整理自《图解 HTTP》
 
+> [Socket](https://github.com/CyC2018/InnterviewNotes/blob/master/notes/Socket.md)
+
+整理自《Unix 网络编程》
+
 
 ## 面向对象 :couple:
 
@@ -77,13 +81,17 @@ Leetcode 上数据库题目的解题记录。
 
 ## Java :coffee:
 
+> [Java 基础](https://github.com/CyC2018/InnterviewNotes/blob/master/notes/Java%20基础.md)
+
+整理了一些常见考点。
+
 > [Java 虚拟机](https://github.com/CyC2018/InnterviewNotes/blob/master/notes/Java%20虚拟机.md)
 
 整理自《深入理解 Java 虚拟机》
 
 > [Java 并发](https://github.com/CyC2018/InnterviewNotes/blob/master/notes/Java%20并发.md)
 
-只整理了一些比较基础的概念，之后会继续添加更多内容。
+整理了一些并发的基本概念。
 
 > [Java 容器](https://github.com/CyC2018/InnterviewNotes/blob/master/notes/Java%20容器.md)
 
@@ -92,10 +100,6 @@ Leetcode 上数据库题目的解题记录。
 > [Java I/O](https://github.com/CyC2018/InnterviewNotes/blob/master/notes/Java%20IO.md)
 
 File, InputStream OutputStream, Reader Writer, Serializable, Socket, NIO
-
-> [Java 基础](https://github.com/CyC2018/InnterviewNotes/blob/master/notes/Java%20基础.md)
-
-整理了一些常见考点。
 
 > [JDK 中的设计模式](https://github.com/CyC2018/InnterviewNotes/blob/master/notes/JDK%20中的设计模式.md)
 
