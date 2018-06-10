@@ -94,10 +94,10 @@ https://leetcode.com/problems/swap-salary/description/
 ```html
 | id | name | sex | salary |
 |----|------|-----|--------|
-| 1  | A    | m   | 2500   |
-| 2  | B    | f   | 1500   |
-| 3  | C    | m   | 5500   |
-| 4  | D    | f   | 500    |
+| 1  | A    | f   | 2500   |
+| 2  | B    | m   | 1500   |
+| 3  | C    | f   | 5500   |
+| 4  | D    | m   | 500    |
 ```
 
 ## SQL Schema
@@ -128,7 +128,6 @@ https://leetcode.com/problems/not-boring-movies/description/
 
 ## Description
 
-邮件地址表：
 
 ```html
 +---------+-----------+--------------+-----------+
@@ -555,7 +554,7 @@ VALUES
 
 ```sql
 SELECT
-    C.NAME AS Customers
+    C.Name AS Customers
 FROM
     Customers C
     LEFT JOIN Orders O ON C.Id = O.CustomerId
@@ -567,11 +566,11 @@ WHERE
 
 ```sql
 SELECT
-    C.NAME AS Customers
+    Name AS Customers
 FROM
-    Customers C
+    Customers
 WHERE
-    C.Id NOT IN ( SELECT CustomerId FROM Orders );
+    Id NOT IN ( SELECT CustomerId FROM Orders );
 ```
 
 # 184. Department Highest Salary
@@ -638,7 +637,7 @@ VALUES
 
 创建一个临时表，包含了部门员工的最大薪资。可以对部门进行分组，然后使用 MAX() 汇总函数取得最大薪资。
 
-之后使用连接将找到一个部门中薪资等于临时表中最大薪资的员工。
+之后使用连接找到一个部门中薪资等于临时表中最大薪资的员工。
 
 ```sql
 SELECT
