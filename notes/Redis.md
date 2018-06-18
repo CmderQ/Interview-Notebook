@@ -6,38 +6,40 @@
     * [SET](#set)
     * [HASH](#hash)
     * [ZSET](#zset)
-* [三、使用场景](#三使用场景)
+* [三、数据结构](#三数据结构)
+    * [字典](#字典)
+    * [跳跃表](#跳跃表)
+* [四、使用场景](#四使用场景)
     * [缓存](#缓存)
     * [计数器](#计数器)
-    * [应用限流](#应用限流)
     * [消息队列](#消息队列)
     * [查找表](#查找表)
     * [交集运算](#交集运算)
     * [排行榜](#排行榜)
     * [分布式 Session](#分布式-session)
     * [分布式锁](#分布式锁)
-* [四、Redis 与 Memcached](#四redis-与-memcached)
+* [五、Redis 与 Memcached](#五redis-与-memcached)
     * [数据类型](#数据类型)
     * [数据持久化](#数据持久化)
     * [分布式](#分布式)
     * [内存管理机制](#内存管理机制)
-* [五、键的过期时间](#五键的过期时间)
-* [六、数据淘汰策略](#六数据淘汰策略)
-* [七、持久化](#七持久化)
+* [六、键的过期时间](#六键的过期时间)
+* [七、数据淘汰策略](#七数据淘汰策略)
+* [八、持久化](#八持久化)
     * [快照持久化](#快照持久化)
     * [AOF 持久化](#aof-持久化)
-* [八、发布与订阅](#八发布与订阅)
-* [九、事务](#九事务)
-* [十、事件](#十事件)
+* [九、发布与订阅](#九发布与订阅)
+* [十、事务](#十事务)
+* [十一、事件](#十一事件)
     * [文件事件](#文件事件)
     * [时间事件](#时间事件)
     * [事件的调度与执行](#事件的调度与执行)
-* [十一、复制](#十一复制)
+* [十二、复制](#十二复制)
     * [连接过程](#连接过程)
     * [主从链](#主从链)
-* [十二、Sentinel](#十二sentinel)
-* [十三、分片](#十三分片)
-* [十四、一个简单的论坛系统分析](#十四一个简单的论坛系统分析)
+* [十三、Sentinel](#十三sentinel)
+* [十四、分片](#十四分片)
+* [十五、一个简单的论坛系统分析](#十五一个简单的论坛系统分析)
     * [文章信息](#文章信息)
     * [点赞功能](#点赞功能)
     * [对文章进行排序](#对文章进行排序)
@@ -205,7 +207,131 @@ OK
 2) "982"
 ```
 
-# 三、使用场景
+# 三、数据结构
+
+## 字典
+
+以下是 Redis 字典的主要数据结构，从上往下分析，一个 dict 有两个 dictht，一个 dictht 有一个 dictEntry 数组，每个 dictEntry 有 next 指针因此是一个链表结构。从上面的分析可以看出 Redis 的字典是一个基于拉链法解决冲突的哈希表结构。
+
+```c
+typedef struct dict {
+    dictType *type;
+    void *privdata;
+    dictht ht[2];
+    long rehashidx; /* rehashing not in progress if rehashidx == -1 */
+    unsigned long iterators; /* number of iterators currently running */
+} dict;
+```
+
+```c
+/* This is our hash table structure. Every dictionary has two of this as we
+ * implement incremental rehashing, for the old to the new table. */
+typedef struct dictht {
+    dictEntry **table;
+    unsigned long size;
+    unsigned long sizemask;
+    unsigned long used;
+} dictht;
+```
+
+```c
+typedef struct dictEntry {
+    void *key;
+    union {
+        void *val;
+        uint64_t u64;
+        int64_t s64;
+        double d;
+    } v;
+    struct dictEntry *next;
+} dictEntry;
+```
+
+哈希表需要具备扩容能力，在扩容时就需要对每个键值对进行 rehash。dict 有两个 dictht，在 rehash 的时候会将一个 dictht 上的键值对重新插入另一个 dictht 上面，完成之后释放空间并交换两个 dictht 的角色。
+
+rehash 操作不是一次性完成，而是采用渐进方式，这是为了避免一次性执行过多的 rehash 操作给服务器带来过大的负担。
+
+渐进式 rehash 通过记录 dict 的 rehashidx 完成，它从 0 开始然后每执行一次 rehash 都会递增。例如在一次 rehash 中，要把 dict[0] rehash 到 dict[1]，这一次会把 dict[0] 上 table[rehashidx] 的键值对 rehash 到 dict[1] 上，dict[0] 的 table[rehashidx] 指向 null，并令 rehashidx++。
+
+在 rehash 期间，每次对字典执行添加、删除、查找或者更新操作时，都会执行一次渐进式 rehash。
+
+采用渐进式 rehash 会导致字典中的数据分散在两个 dictht 上，因此对字典的操作也需要到对应的 dictht 去执行。
+
+```c
+/* Performs N steps of incremental rehashing. Returns 1 if there are still
+ * keys to move from the old to the new hash table, otherwise 0 is returned.
+ *
+ * Note that a rehashing step consists in moving a bucket (that may have more
+ * than one key as we use chaining) from the old to the new hash table, however
+ * since part of the hash table may be composed of empty spaces, it is not
+ * guaranteed that this function will rehash even a single bucket, since it
+ * will visit at max N*10 empty buckets in total, otherwise the amount of
+ * work it does would be unbound and the function may block for a long time. */
+int dictRehash(dict *d, int n) {
+    int empty_visits = n * 10; /* Max number of empty buckets to visit. */
+    if (!dictIsRehashing(d)) return 0;
+
+    while (n-- && d->ht[0].used != 0) {
+        dictEntry *de, *nextde;
+
+        /* Note that rehashidx can't overflow as we are sure there are more
+         * elements because ht[0].used != 0 */
+        assert(d->ht[0].size > (unsigned long) d->rehashidx);
+        while (d->ht[0].table[d->rehashidx] == NULL) {
+            d->rehashidx++;
+            if (--empty_visits == 0) return 1;
+        }
+        de = d->ht[0].table[d->rehashidx];
+        /* Move all the keys in this bucket from the old to the new hash HT */
+        while (de) {
+            uint64_t h;
+
+            nextde = de->next;
+            /* Get the index in the new hash table */
+            h = dictHashKey(d, de->key) & d->ht[1].sizemask;
+            de->next = d->ht[1].table[h];
+            d->ht[1].table[h] = de;
+            d->ht[0].used--;
+            d->ht[1].used++;
+            de = nextde;
+        }
+        d->ht[0].table[d->rehashidx] = NULL;
+        d->rehashidx++;
+    }
+
+    /* Check if we already rehashed the whole table... */
+    if (d->ht[0].used == 0) {
+        zfree(d->ht[0].table);
+        d->ht[0] = d->ht[1];
+        _dictReset(&d->ht[1]);
+        d->rehashidx = -1;
+        return 0;
+    }
+
+    /* More to rehash... */
+    return 1;
+}
+```
+
+## 跳跃表
+
+是有序集合的底层实现之一。
+
+跳跃表是基于多指针有序链表实现的，可以看成多个有序链表。
+
+<div align="center"> <img src="../pics//beba612e-dc5b-4fc2-869d-0b23408ac90a.png"/> </div><br>
+
+在查找时，从上层指针开始查找，找到对应的区间之后再到下一层去查找。例如下图演示了查找 22 的过程。
+
+<div align="center"> <img src="../pics//0ea37ee2-c224-4c79-b895-e131c6805c40.png"/> </div><br>
+
+与红黑树等平衡树相比，跳跃表具有以下优点：
+
+- 插入速度非常快速，因为不需要平衡树的旋转操作；
+- 更容易实现；
+- 支持无锁操作。
+
+# 四、使用场景
 
 ## 缓存
 
@@ -214,10 +340,6 @@ OK
 ## 计数器
 
 Redis 这种内存数据库能支持计数器频繁的读写操作。
-
-## 应用限流
-
-限制一个网站访问流量。
 
 ## 消息队列
 
@@ -241,10 +363,9 @@ Redis 这种内存数据库能支持计数器频繁的读写操作。
 
 ## 分布式锁
 
-除了可以使用 SETNX 实现分布式锁之外，还可以使用官方提供的 RedLock 分布式锁实现。
+除了可以使用 SETNX 命令实现分布式锁之外，还可以使用官方提供的 RedLock 分布式锁实现。
 
-
-# 四、Redis 与 Memcached
+# 五、Redis 与 Memcached
 
 两者都是非关系型内存键值数据库。有以下主要不同：
 
@@ -258,7 +379,7 @@ Redis 支持两种持久化策略：RDB 快照和 AOF 日志，而 Memcached 不
 
 ## 分布式
 
-Memcached 不支持分布式，只能通过在客户端使用像一致性哈希这样的分布式算法来实现分布式存储，这种方式在存储和查询时都需要先在客户端计算一次数据所在的节点。
+Memcached 不支持分布式，只能通过在客户端使用一致性哈希这样的分布式算法来实现分布式存储，这种方式在存储和查询时都需要先在客户端计算一次数据所在的节点。
 
 Redis Cluster 实现了分布式的支持。
 
@@ -268,14 +389,13 @@ Redis Cluster 实现了分布式的支持。
 
 Memcached 将内存分割成特定长度的块来存储数据，以完全解决内存碎片的问题，但是这种方式会使得内存的利用率不高，例如块的大小为 128 bytes，只存储 100 bytes 的数据，那么剩下的 28 bytes 就浪费掉了。
 
-
-# 五、键的过期时间
+# 六、键的过期时间
 
 Redis 可以为每个键设置过期时间，当键过期时，会自动删除该键。
 
 对于散列表这种容器，只能为整个键设置过期时间（整个散列表），而不能为键里面的单个元素设置过期时间。
 
-# 六、数据淘汰策略
+# 七、数据淘汰策略
 
 可以设置内存最大使用量，当内存使用量超过时施行淘汰策略，具体有 6 种淘汰策略。
 
@@ -290,9 +410,9 @@ Redis 可以为每个键设置过期时间，当键过期时，会自动删除�
 
 如果使用 Redis 来缓存数据时，要保证所有数据都是热点数据，可以将内存最大使用量设置为热点数据占用的内存量，然后启用 allkeys-lru 淘汰策略，将最近最少使用的数据淘汰。
 
-作为内存数据库，出于对性能和内存消耗的考虑，Redis 的淘汰算法（LRU、TTL）实际实现上并非针对所有 key，而是抽样一小部分 key 从中选出被淘汰 key，抽样数量可通过 maxmemory-samples 配置。
+作为内存数据库，出于对性能和内存消耗的考虑，Redis 的淘汰算法（LRU、TTL）实际实现上并非针对所有 key，而是抽样一小部分 key 从中选出被淘汰 key。
 
-# 七、持久化
+# 八、持久化
 
 Redis 是内存型数据库，为了保证数据在断电后不会丢失，需要将内存中的数据持久化到硬盘上。
 
@@ -326,7 +446,7 @@ Redis 是内存型数据库，为了保证数据在断电后不会丢失，需�
 
 随着服务器写请求的增多，AOF 文件会越来越大。Redis 提供了一种将 AOF 重写的特性，能够去除 AOF 文件中的冗余写命令。
 
-# 八、发布与订阅
+# 九、发布与订阅
 
 订阅者订阅了频道之后，发布者向频道发送字符串消息会被所有订阅者接收到。
 
@@ -335,11 +455,11 @@ Redis 是内存型数据库，为了保证数据在断电后不会丢失，需�
 发布与订阅模式和观察者模式有以下不同：
 
 - 观察者模式中，观察者和主题都知道对方的存在；而在发布与订阅模式中，发布者与订阅者不知道对方的存在，它们之间通过频道进行通信。
-- 观察者模式是同步的，当事件触发时，主题会去调用观察者的方法；而发布与订阅模式是异步的；
+- 观察者模式是同步的，当事件触发时，主题会去调用观察者的方法，然后等待方法返回；而发布与订阅模式是异步的，发布者向频道发送一个消息之后，就不需要关心订阅者何时去订阅这个消息。
 
 <div align="center"> <img src="../pics//bee1ff1d-c80f-4b3c-b58c-7073a8896ab2.jpg" width="400"/> </div><br>
 
-# 九、事务
+# 十、事务
 
 一个事务包含了多个命令，服务器在执行事务期间，不会改去执行其它客户端的命令请求。
 
@@ -347,7 +467,7 @@ Redis 是内存型数据库，为了保证数据在断电后不会丢失，需�
 
 Redis 最简单的事务实现方式是使用 MULTI 和 EXEC 命令将事务操作包围起来。
 
-# 十、事件
+# 十一、事件
 
 Redis 服务器是一个事件驱动程序。
 
@@ -355,7 +475,7 @@ Redis 服务器是一个事件驱动程序。
 
 服务器通过套接字与客户端或者其它服务器进行通信，文件事件就是对套接字操作的抽象。
 
-Redis 基于 Reactor 模式开发了自己的网络时间处理器，使用 I/O 多路复用程序来同时监听多个套接字，并将到达的时间传送给文件事件分派器，分派器会根据套接字产生的事件类型调用响应的时间处理器。
+Redis 基于 Reactor 模式开发了自己的网络事件处理器，使用 I/O 多路复用程序来同时监听多个套接字，并将到达的事件传送给文件事件分派器，分派器会根据套接字产生的事件类型调用相应的事件处理器。
 
 <div align="center"> <img src="../pics//9ea86eb5-000a-4281-b948-7b567bd6f1d8.png"/> </div><br>
 
@@ -368,11 +488,11 @@ Redis 基于 Reactor 模式开发了自己的网络时间处理器，使用 I/O 
 - 定时事件：是让一段程序在指定的时间之内执行一次；
 - 周期性事件：是让一段程序每隔指定时间就执行一次。
 
-Redis 将所有时间事件都放在一个无序链表中，通过遍历整个链表查找出已到达的时间事件，并调用响应的事件处理器。
+Redis 将所有时间事件都放在一个无序链表中，通过遍历整个链表查找出已到达的时间事件，并调用相应的事件处理器。
 
 ## 事件的调度与执行
 
-服务器需要不断监听文件事件的套接字才能得到待处理的文件事件，但是不能监听太久，否则时间事件无法在规定的时间内执行，因此监听时间应该根据距离现在最近的时间事件来决定。
+服务器需要不断监听文件事件的套接字才能得到待处理的文件事件，但是不能一直监听，否则时间事件无法在规定的时间内执行，因此监听时间应该根据距离现在最近的时间事件来决定。
 
 事件调度与执行由 aeProcessEvents 函数负责，伪代码如下：
 
@@ -422,7 +542,7 @@ def main():
 
 <div align="center"> <img src="../pics//dda1608d-26e0-4f10-8327-a459969b150a.png" width=""/> </div><br>
 
-# 十一、复制
+# 十二、复制
 
 通过使用 slaveof host port 命令来让一个服务器成为另一个服务器的从服务器。
 
@@ -442,35 +562,35 @@ def main():
 
 <div align="center"> <img src="../pics//395a9e83-b1a1-4a1d-b170-d081e7bb5bab.png" width="600"/> </div><br>
 
-# 十二、Sentinel
+# 十三、Sentinel
 
 Sentinel（哨兵）可以监听主服务器，并在主服务器进入下线状态时，自动从从服务器中选举出新的主服务器。
 
-# 十三、分片
+# 十四、分片
 
 分片是将数据划分为多个部分的方法，可以将数据存储到多台机器里面，也可以从多台机器里面获取数据，这种方法在解决某些问题时可以获得线性级别的性能提升。
 
 假设有 4 个 Reids 实例 R0，R1，R2，R3，还有很多表示用户的键 user:1，user:2，... 等等，有不同的方式来选择一个指定的键存储在哪个实例中。最简单的方式是范围分片，例如用户 id 从 0\~1000 的存储到实例 R0 中，用户 id 从 1001\~2000 的存储到实例 R1 中，等等。但是这样需要维护一张映射范围表，维护操作代价很高。还有一种方式是哈希分片，使用 CRC32 哈希函数将键转换为一个数字，再对实例数量求模就能知道应该存储的实例。
 
-主要有三种分片方式：
+根据执行分片的位置，可以分为三种分片方式：
 
 - 客户端分片：客户端使用一致性哈希等算法决定键应当分布到哪个节点。
 - 代理分片：将客户端请求发送到代理上，由代理转发请求到正确的节点上。
 - 服务器分片：Redis Cluster。
 
-# 十四、一个简单的论坛系统分析
+# 十五、一个简单的论坛系统分析
 
 该论坛系统功能如下：
 
 - 可以发布文章；
 - 可以对文章进行点赞；
-- 在首页可以按文章的发布时间或者文章的点赞数进行排序显示；
+- 在首页可以按文章的发布时间或者文章的点赞数进行排序显示。
 
 ## 文章信息
 
 文章包括标题、作者、赞数等信息，在关系型数据库中很容易构建一张表来存储这些信息，在 Redis 中可以使用 HASH 来存储每种信息以及其对应的值的映射。
 
-Redis 没有关系型数据库中的表这一概念来将同类型的数据存放在一起，而是使用命名空间的方式来实现这一功能。键名的前面部分存储命名空间，后面部分的内容存储 ID，通常使用 : 来进行分隔。例如下面的 HASH 的键名为 article:92617，其中 article 为命名空间，ID 为 92617。
+Redis 没有关系型数据库中的表这一概念来将同种类型的数据存放在一起，而是使用命名空间的方式来实现这一功能。键名的前面部分存储命名空间，后面部分的内容存储 ID，通常使用 : 来进行分隔。例如下面的 HASH 的键名为 article:92617，其中 article 为命名空间，ID 为 92617。
 
 <div align="center"> <img src="../pics//7c54de21-e2ff-402e-bc42-4037de1c1592.png" width="400"/> </div><br>
 
@@ -493,6 +613,7 @@ Redis 没有关系型数据库中的表这一概念来将同类型的数据存�
 - Carlson J L. Redis in Action[J]. Media.johnwiley.com.au, 2013.
 - [黄健宏. Redis 设计与实现 [M]. 机械工业出版社, 2014.](http://redisbook.com/index.html)
 - [REDIS IN ACTION](https://redislabs.com/ebook/foreword/)
+- [Skip Lists: Done Right](http://ticki.github.io/blog/skip-lists-done-right/)
 - [论述 Redis 和 Memcached 的差异](http://www.cnblogs.com/loveincode/p/7411911.html)
 - [Redis 3.0 中文版- 分片](http://wiki.jikexueyuan.com/project/redis-guide)
 - [Redis 应用场景](http://www.scienjus.com/redis-use-case/)
