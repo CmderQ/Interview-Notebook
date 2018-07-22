@@ -1,8 +1,15 @@
-[![](https://img.shields.io/badge/_-gitter-blue.svg)](https://gitter.im/CyC2018-Interview-Notebook/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link) [![](https://img.shields.io/badge/>-gitbook-blue.svg)](https://legacy.gitbook.com/book/cyc2018/interview-notebook/details) 
-
 | Ⅰ | Ⅱ | Ⅲ | Ⅳ | Ⅴ | Ⅵ | Ⅶ | Ⅷ | Ⅸ | Ⅹ |
 | :--------: | :---------: | :---------: | :---------: | :---------: | :---------:| :---------: | :-------: | :-------:| :------:|
 | 算法[:pencil2:](#算法-pencil2) | 操作系统[:computer:](#操作系统-computer)|网络[:cloud:](#网络-cloud) | 面向对象[:couple:](#面向对象-couple) |数据库[:floppy_disk:](#数据库-floppy_disk)| Java [:coffee:](#java-coffee)| 分布式 [:sweat_drops:](#分布式-sweat_drops)| 工具[:hammer:](#工具-hammer)| 编码实践[:speak_no_evil:](#编码实践-speak_no_evil)| 后记[:memo:](#后记-memo) |
+
+<br>
+<div align="center">
+    <img src="other/LogoMakr_0zpEzN.png" width="150px">
+    <br>
+    <a href="https://gitter.im/CyC2018-Interview-Notebook/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link"> <img src="https://img.shields.io/badge/>-gitter-4ab8a1.svg"></a> <a href="https://legacy.gitbook.com/book/cyc2018/interview-notebook/details"> <img src="https://img.shields.io/badge/_-gitbook-4ab8a1.svg"></a> 
+</div>
+
+<!-- [![](https://img.shields.io/badge/>-gitter-blue.svg)](https://gitter.im/CyC2018-Interview-Notebook/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link) [![](https://img.shields.io/badge/_-gitbook-4ab8a1.svg)](https://legacy.gitbook.com/book/cyc2018/interview-notebook/details)  -->
 
 ## 算法 :pencil2:
 
@@ -171,6 +178,10 @@ Google 开源项目的代码风格规范。
 **声明**
 
 本仓库不参与商业行为，不向读者收取任何费用。(This repository is not engaging in business activities, and does not charge readers any fee.)
+
+**Logo**
+
+Logo power by https://logomakr.com/
 
 **鸣谢**
 
