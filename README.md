@@ -9,8 +9,6 @@
     <a href="other/Group.md"> <img src="https://img.shields.io/badge/>-group-4ab8a1.svg"></a> <a href="https://legacy.gitbook.com/book/cyc2018/interview-notebook/details"> <img src="https://img.shields.io/badge/_-gitbook-4ab8a1.svg"></a> 
 </div>
 
-<!-- [![](https://img.shields.io/badge/>-gitter-blue.svg)](https://gitter.im/CyC2018-Interview-Notebook/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link) [![](https://img.shields.io/badge/_-gitbook-4ab8a1.svg)](https://legacy.gitbook.com/book/cyc2018/interview-notebook/details)  -->
-
 ### :pencil2: 算法
 
 - [剑指 Offer 题解](https://github.com/CyC2018/InnterviewNotes/blob/master/notes/剑指%20offer%20题解.md)
@@ -165,15 +163,17 @@
 
 #### About
 
-这个仓库是笔者的一个学习笔记，主要总结一些比较重要的知识点，希望对大家有所帮助。
+本仓库主要是根据计算机经典书籍以及官方技术文档进行总结的学习笔记，希望对大家有所帮助。
 
-笔记不是从网上到处复制粘贴拼凑而来，虽然有少部分内容会直接引入书上原文或者官方技术文档的原文，但是没有直接摘抄其他人的博客文章，只做了参考，参考的文章会在最后给出链接。
+学习笔记不是从网上到处拼凑而来，除了少部分引用书上和技术文档的原文，其余都是笔者的原创。在您引用本仓库内容或者对内容进行修改演绎时，请遵循文末的开源协议，谢谢。
 
-[BOOKLIST](https://github.com/CyC2018/Interview-Notebook/blob/master/BOOKLIST.md)，这个书单是笔者至今看的一些比较好的技术书籍，虽然没有全都看完，但每本书多多少少都看了一部分。
+#### BookList
+
+本仓库参考的书目：[BOOKLIST](https://github.com/CyC2018/Interview-Notebook/blob/master/BOOKLIST.md)。
 
 #### How To Contribute
 
-笔记内容是笔者一个字一个字打上去的，难免会有一些笔误，如果发现笔误可直接在相应文档进行编辑修改。
+笔记内容是笔者一个字一个字打上去的，难免会有一些笔误，如果发现笔误可直接对相应文档进行编辑修改。
 
 如果想要提交一个仓库现在还没有的全新内容，可以先将相应的文档放到 other 目录下。
 

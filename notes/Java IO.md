@@ -6,7 +6,7 @@
     * [装饰者模式](#装饰者模式)
 * [四、字符操作](#四字符操作)
     * [编码与解码](#编码与解码)
-    * [String](#string)
+    * [String 的编码方式](#string-的编码方式)
     * [Reader 与 Writer](#reader-与-writer)
     * [实现逐行输出文本文件的内容](#实现逐行输出文本文件的内容)
 * [五、对象操作](#五对象操作)
@@ -121,7 +121,7 @@ UTF-16be 中的 be 指的是 Big Endian，也就是大端。相应地也有 UTF-
 
 Java 使用双字节编码 UTF-16be，这不是指 Java 只支持这一种编码方式，而是说 char 这种类型使用 UTF-16be 进行编码。char 类型占 16 位，也就是两个字节，Java 使用这种双字节编码是为了让一个中文或者一个英文都能使用一个 char 来存储。
 
-## String
+## String 的编码方式
 
 String 可以看成一个字符序列，可以指定一个编码方式将它编码为字节序列，也可以指定一个编码方式将一个字节序列解码为 String。
 
@@ -182,8 +182,10 @@ public static void readFileContent(String filePath) throws IOException {
 
 ```java
 public static void main(String[] args) throws IOException, ClassNotFoundException {
+
     A a1 = new A(123, "abc");
     String objectFile = "file/a1";
+
     ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(objectFile));
     objectOutputStream.writeObject(a1);
     objectOutputStream.close();
@@ -195,6 +197,7 @@ public static void main(String[] args) throws IOException, ClassNotFoundExceptio
 }
 
 private static class A implements Serializable {
+
     private int x;
     private String y;
 
@@ -371,7 +374,7 @@ public static void fastCopy(String src, String dist) throws IOException {
     /* 获取目标文件的输出字节流 */
     FileOutputStream fout = new FileOutputStream(dist);
 
-    /* 获取输出字节流的通道 */
+    /* 获取输出字节流的文件通道 */
     FileChannel fcout = fout.getChannel();
 
     /* 为缓冲区分配 1024 个字节 */
@@ -392,7 +395,7 @@ public static void fastCopy(String src, String dist) throws IOException {
 
         /* 把缓冲区的内容写入输出文件中 */
         fcout.write(buffer);
-        
+
         /* 清空缓冲区 */
         buffer.clear();
     }
@@ -407,7 +410,7 @@ NIO 实现了 IO 多路复用中的 Reactor 模型，一个线程 Thread 使用�
 
 通过配置监听的通道 Channel 为非阻塞，那么当 Channel 上的 IO 事件还未到达时，就不会进入阻塞状态一直等待，而是继续轮询其它 Channel，找到 IO 事件已经到达的 Channel 执行。
 
-因为创建和切换线程的开销很大，因此使用一个线程来处理多个事件而不是一个线程处理一个事件具有更好的性能。
+因为创建和切换线程的开销很大，因此使用一个线程来处理多个事件而不是一个线程处理一个事件，对于 IO 密集型的应用具有很好地性能。
 
 应该注意的是，只有套接字 Channel 才能配置为非阻塞，而 FileChannel 不能，为 FileChannel 配置非阻塞也没有意义。
 
@@ -601,8 +604,8 @@ MappedByteBuffer mbb = fc.map(FileChannel.MapMode.READ_WRITE, 0, 1024);
 
 NIO 与普通 I/O 的区别主要有以下两点：
 
-- NIO 是非阻塞的
-- NIO 面向块，I/O 面向流
+- NIO 是非阻塞的；
+- NIO 面向块，I/O 面向流。
 
 # 八、参考资料
 

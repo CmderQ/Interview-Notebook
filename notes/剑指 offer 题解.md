@@ -230,7 +230,7 @@ Output:
 ```java
 public String replaceSpace(StringBuffer str) {
     int P1 = str.length() - 1;
-    for (int i = 0; i < str.length(); i++)
+    for (int i = 0; i < P1 + 1; i++)
         if (str.charAt(i) == ' ')
             str.append("  ");
 
@@ -1433,7 +1433,8 @@ public boolean IsPopOrder(int[] pushSequence, int[] popSequence) {
     Stack<Integer> stack = new Stack<>();
     for (int pushIndex = 0, popIndex = 0; pushIndex < n; pushIndex++) {
         stack.push(pushSequence[pushIndex]);
-        while (popIndex < n && stack.peek() == popSequence[popIndex]) {
+        while (popIndex < n && !stack.isEmpty() 
+                && stack.peek() == popSequence[popIndex]) {
             stack.pop();
             popIndex++;
         }
@@ -1578,7 +1579,7 @@ private boolean verify(int[] sequence, int first, int last) {
     int cutIndex = first;
     while (cutIndex < last && sequence[cutIndex] <= rootVal)
         cutIndex++;
-    for (int i = cutIndex + 1; i < last; i++)
+    for (int i = cutIndex; i < last; i++)
         if (sequence[i] < rootVal)
             return false;
     return verify(sequence, first, cutIndex - 1) && verify(sequence, cutIndex, last - 1);
@@ -2244,7 +2245,7 @@ public int GetUglyNumber_Solution(int N) {
 
 ## 题目描述
 
-在一个字符串 中找到第一个只出现一次的字符，并返回它的位置。
+在一个字符串中找到第一个只出现一次的字符，并返回它的位置。
 
 ## 解题思路
 
