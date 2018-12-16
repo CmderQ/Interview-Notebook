@@ -88,7 +88,7 @@
 
 - [Java 容器](https://github.com/CyC2018/InnterviewNotes/blob/master/notes/Java%20容器.md)
 
-  源码分析：ArrayList、Vector、CopyOnWriteArrayList、LinkedList、HashMap、ConcurrentHashMap、LinkedHashMap、WeekHashMap。
+  源码分析：ArrayList、Vector、CopyOnWriteArrayList、LinkedList、HashMap、ConcurrentHashMap、LinkedHashMap、WeakHashMap。
 
 - [Java 并发](https://github.com/CyC2018/InnterviewNotes/blob/master/notes/Java%20并发.md)
 
@@ -232,6 +232,10 @@ Power by [logomakr](https://logomakr.com/).
 <a href="https://github.com/mafulong">
 ​    <img src="https://avatars1.githubusercontent.com/u/24795000?s=400&v=4" width="50px">
 </a>
+<a href="https://github.com/yanglbme">
+​    <img src="https://avatars1.githubusercontent.com/u/21008209?s=400&v=4" width="50px">
+</a>
+
 
 #### License
 
