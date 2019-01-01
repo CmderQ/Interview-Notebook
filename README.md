@@ -7,7 +7,7 @@
 <div align="center">
     <img src="other/LogoMakr_0zpEzN.png" width="150px">
     <br>
-    <a href="other/Group.md"> <img src="https://img.shields.io/badge/>-group-4ab8a1.svg"></a> <a href="https://legacy.gitbook.com/book/cyc2018/interview-notebook/details"> <img src="https://img.shields.io/badge/_-gitbook-4ab8a1.svg"></a> 
+    <a href="https://cyc2018.github.io/CS-Notes"> <img src="https://img.shields.io/badge/>-read-4ab8a1.svg"></a>  <a href="other/Group.md"> <img src="https://img.shields.io/badge/_-group-4ab8a1.svg"></a> 
 </div> 
 
 ### :pencil2: 算法
@@ -137,20 +137,16 @@
 - [Docker](https://github.com/CyC2018/CS-Notes/blob/master/docs/notes/Docker.md)
 
   Docker 基本原理。
+  
+  - [构建工具](https://github.com/CyC2018/CS-Notes/blob/master/docs/notes/构建工具.md)
+
+  构建工具的基本概念、主流构建工具介绍。
 
 - [正则表达式](https://github.com/CyC2018/CS-Notes/blob/master/docs/notes/正则表达式.md)
 
   正则表达式基本语法。
 
-- [构建工具](https://github.com/CyC2018/CS-Notes/blob/master/docs/notes/构建工具.md)
-
-  构建工具的基本概念、主流构建工具介绍。
-
 ### :speak_no_evil: 编码实践 
-
-- [重构](https://github.com/CyC2018/CS-Notes/blob/master/docs/notes/重构.md)
-
-  参考 重构 改善既有代码的设计。
 
 - [代码可读性](https://github.com/CyC2018/CS-Notes/blob/master/docs/notes/代码可读性.md)
 
@@ -168,10 +164,6 @@
 
 学习笔记不是从网上到处拼凑而来，除了少部分引用书上和技术文档的原文，其余都是笔者的原创。在您引用本仓库内容或者对内容进行修改演绎时，请遵循文末的开源协议，谢谢。
 
-#### How To Use
-
-[Wiki](https://github.com/CyC2018/CS-Notes/wiki)
-
 #### How To Contribute
 
 笔记内容是笔者一个字一个字打上去的，难免会有一些笔误，如果发现笔误可直接对相应文档进行编辑修改。
@@ -182,7 +174,11 @@
 
 #### BookList
 
-本仓库参考的书目：[BOOKLIST](https://github.com/CyC2018/Interview-Notebook/blob/master/BOOKLIST.md)。
+本仓库参考的资料：[LEARNING.md](other/LEARNING.md)。
+
+#### 2018 Summary
+
+[2018 这一年.md](other/2018%20这一年.md)。
 
 #### Typesetting
 
