@@ -12,7 +12,7 @@ Coursera 上有配套视频课程可学习：[Algorithms](https://www.coursera.o
 
 [豆瓣](https://book.douban.com/subject/25859528/) 9.4 分，139 分。
 
-C++ 实现，可以结合配套视频观看：[清华大学  数据结构](https://www.xuetangx.com/courses/course-v1:TsinghuaX+30240184+sp/about)
+C++ 实现，可以结合配套视频观看：[清华大学 数据结构](https://www.xuetangx.com/courses/course-v1:TsinghuaX+30240184+sp/about)
 
 > **剑指 Offer 题解**
 
@@ -146,7 +146,7 @@ HTTP 也是网络中非常重要的部分，这本书很容易看懂，也推荐
 
 > **Leetcode-Database**
 
-学完 SQL 之后最到 [Leetcode](https://leetcode.com/problemset/database/) 上实践一下， 面试有时候也会考察手写 SQL 语句。可以结合着 [我的笔记](https://github.com/CyC2018/CS-Notes/blob/master/docs/notes/Leetcode-Database%20题解.md) 刷题。
+学完 SQL 之后最到 [Leetcode](https://leetcode.com/problemset/database/) 上实践一下， 面试有时候也会考察手写 SQL 语句。可以结合着 [我的笔记](https://github.com/CyC2018/CS-Notes/blob/master/docs/notes/Leetcode-Database%20%E9%A2%98%E8%A7%A3.md) 刷题。
 
 > **数据库系统原理**
 
@@ -156,7 +156,7 @@ HTTP 也是网络中非常重要的部分，这本书很容易看懂，也推荐
 
 [我的笔记](https://github.com/CyC2018/CS-Notes/blob/master/docs/notes/MySQL.md) 对常见 的 MySQL 问题做了总结，适合入门。
 
-> **高性能 MySQL** 
+> **高性能 MySQL**
 
 [豆瓣](https://book.douban.com/subject/23008813/) 9.3 分，408 人评分。
 
@@ -218,18 +218,18 @@ Redis 作为内存型键值对非关系型数据库，主要作为缓存使用�
 
 > **其它**
 
-- [[system-design-primer][Github]](https://github.com/donnemartin/system-design-primer)
-- [[Leetcode / Interview Questions][题集]](https://leetcode.com/discuss/interview-question/?orderBy=most_votes)
-- [[系统设计面试题精选][Gitbook]](https://soulmachine.gitbooks.io/system-design/content/cn/)
-- [[海量数据面试题]](https://samanthachen.github.io/2016/08/01/%E6%B5%B7%E9%87%8F%E6%95%B0%E6%8D%AE%E9%9D%A2%E8%AF%95%E9%A2%98/)
-- [[前端经典面试题: 从输入 URL 到页面加载发生了什么？][具体问题]](https://segmentfault.com/a/1190000006879700)
-- [[秒杀系统架构分析与实战][具体问题]](https://my.oschina.net/xianggao/blog/524943)
-- [[微信二维码登录原理][具体问题]](https://zhuanlan.zhihu.com/p/22325152?refer=bittiger)
-- [[Create a TinyURL System][具体问题]](http://blog.gainlo.co/index.php/2016/03/08/system-design-interview-question-create-tinyurl-system/)
-- [[Design a Key-Value Store (Part I)][具体问题]](http://blog.gainlo.co/index.php/2016/06/14/design-a-key-value-store-part-i/)
-- [[坦率地讲 服务熔断 & 服务降级][知识点]](http://lexuslee.me/2018/02/01/2018-01-18-Service-fallback/)
-- [[理解 HTTP 幂等性][知识点]](https://www.cnblogs.com/weidagang2046/archive/2011/06/04/idempotence.html)
-- [[接口限流算法][知识点]](https://blog.csdn.net/ljj821061514/article/details/52512943)
-- [[微服务学习资料汇总][知识点]](https://www.infoq.cn/article/2014%2F07%2Fmicroservice-learning-resources)
-- [[理解 RESTful 架构][知识点]](http://www.ruanyifeng.com/blog/2011/09/restful.html)
-- [[MapReduce 算法][知识点]](https://github.com/xuelangZF/CS_Offer/blob/master/Others/Hadoop_Spark.md)
+- [[system-design-primer\][Github]](https://github.com/donnemartin/system-design-primer)
+- [[Leetcode / Interview Questions\][题集]](https://leetcode.com/discuss/interview-question/?orderBy=most_votes)
+- [[系统设计面试题精选\][Gitbook]](https://soulmachine.gitbooks.io/system-design/content/cn/)
+- [[海量数据面试题\]](https://samanthachen.github.io/2016/08/01/%E6%B5%B7%E9%87%8F%E6%95%B0%E6%8D%AE%E9%9D%A2%E8%AF%95%E9%A2%98/)
+- [[前端经典面试题: 从输入 URL 到页面加载发生了什么？\][具体问题]](https://segmentfault.com/a/1190000006879700)
+- [[秒杀系统架构分析与实战\][具体问题]](https://my.oschina.net/xianggao/blog/524943)
+- [[微信二维码登录原理\][具体问题]](https://zhuanlan.zhihu.com/p/22325152?refer=bittiger)
+- [[Create a TinyURL System\][具体问题]](http://blog.gainlo.co/index.php/2016/03/08/system-design-interview-question-create-tinyurl-system/)
+- [[Design a Key-Value Store (Part I)\][具体问题]](http://blog.gainlo.co/index.php/2016/06/14/design-a-key-value-store-part-i/)
+- [[坦率地讲 服务熔断 & 服务降级\][知识点]](http://lexuslee.me/2018/02/01/2018-01-18-Service-fallback/)
+- [[理解 HTTP 幂等性\][知识点]](https://www.cnblogs.com/weidagang2046/archive/2011/06/04/idempotence.html)
+- [[接口限流算法\][知识点]](https://blog.csdn.net/ljj821061514/article/details/52512943)
+- [[微服务学习资料汇总\][知识点]](https://www.infoq.cn/article/2014%2F07%2Fmicroservice-learning-resources)
+- [[理解 RESTful 架构\][知识点]](http://www.ruanyifeng.com/blog/2011/09/restful.html)
+- [[MapReduce 算法\][知识点]](https://github.com/xuelangZF/CS_Offer/blob/master/Others/Hadoop_Spark.md)
