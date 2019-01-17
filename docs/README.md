@@ -1,4 +1,3 @@
-[🎁 面试专栏限时优惠，更能加入知识星球](https://xiaozhuanlan.com/CyC2018)
 
 ##  ✏️ 算法
 
