@@ -1,4 +1,4 @@
-[🎉 面试进阶专栏已上线](https://xiaozhuanlan.com/CyC2018)
+[🎉 面试进阶指南已上线](https://xiaozhuanlan.com/CyC2018)
 <!-- GFM-TOC -->
 * [1. 前言](#1-前言)
 * [2. 实现 Singleton](#2-实现-singleton)
@@ -84,11 +84,6 @@
 
 # 1. 前言
 
-本文的绘图可通过以下途径免费获得并使用：
-
-- [ProcessOn](https://www.processon.com/view/5a3e4c7be4b0909c1aa18b49)
-- [DrawIO](https://drive.google.com/file/d/1nSSCpPUC05MFoeFuf_aeTtkm7dG5-bJ1/view?usp=sharing)
-
 本文内容可在微信小程序中阅读：
 
 <div align="center"> <img src="pics/gh_a68199af85d6_258_20_282_29.jpg"/> </div><br>
@@ -115,24 +110,14 @@ Output:
 
 ## 解题思路
 
-要求复杂度为 O(N) + O(1)，也就是时间复杂度 O(N)，空间复杂度 O(1)。因此不能使用排序的方法，也不能使用额外的标记数组。牛客网讨论区这一题的首票答案使用 nums[i] + length 来将元素标记，这么做会有加法溢出问题。
+要求复杂度为 O(N) + O(1)，也就是时间复杂度 O(N)，空间复杂度 O(1)。因此不能使用排序的方法，也不能使用额外的标记数组。
 
-这种数组元素在 [0, n-1] 范围内的问题，可以将值为 i 的元素调整到第 i 个位置上。
+对于这种数组元素在 [0, n-1] 范围内的问题，可以将值为 i 的元素调整到第 i 个位置上进行求解。
 
-以 (2, 3, 1, 0, 2, 5) 为例：
+以 (2, 3, 1, 0, 2, 5) 为例，遍历到位置 4 时，该位置上的数为 2，但是第 2 个位置上已经有一个 2 的值了，因此可以知道 2 重复：
 
-```text
-position-0 : (2,3,1,0,2,5) // 2 <-> 1
-             (1,3,2,0,2,5) // 1 <-> 3
-             (3,1,2,0,2,5) // 3 <-> 0
-             (0,1,2,3,2,5) // already in position
-position-1 : (0,1,2,3,2,5) // already in position
-position-2 : (0,1,2,3,2,5) // already in position
-position-3 : (0,1,2,3,2,5) // already in position
-position-4 : (0,1,2,3,2,5) // nums[i] == nums[nums[i]], exit
-```
+<div align="center"> <img src="https://github.com/CyC2018/CS-Notes/raw/master/docs/notes/pics/11548084848123.gif" width="250px"> </div><br>
 
-遍历到位置 4 时，该位置上的数为 2，但是第 2 个位置上已经有一个 2 的值了，因此可以知道 2 重复。
 
 ```java
 public boolean duplicate(int[] nums, int length, int[] duplication) {
