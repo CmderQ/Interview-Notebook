@@ -287,7 +287,7 @@ public ArrayList<Integer> printListFromTailToHead(ListNode listNode) {
 
 ### 使用栈
 
-<div align="center"> <img src="pics/_u4ECE_u5C3E_u5230_u5934_u6253_1548293773431.gif" width="500px"> </div><br>
+<div align="center"> <img src="pics/_u4ECE_u5C3E_u5230_u5934_u6253_1548503461113.gif" width="500px"> </div><br>
 
 ```java
 public ArrayList<Integer> printListFromTailToHead(ListNode listNode) {
@@ -316,11 +316,13 @@ preorder = [3,9,20,15,7]
 inorder =  [9,3,15,20,7]
 ```
 
-<div align="center"> <img src="pics/8a4c6ad4-a816-47d1-b93f-7ca4f78ab67a.png" width="250"/> </div><br>
+<div align="center"> <img src="pics/_u91CD_u5EFA_u4E8C_u53C9_u6811-1.gif" width="200"/> </div><br>
 
 ## 解题思路
 
 前序遍历的第一个值为根节点的值，使用这个值将中序遍历结果分成两部分，左部分为树的左子树中序遍历结果，右部分为树的右子树中序遍历的结果。
+
+<div align="center"> <img src="pics/_u91CD_u5EFA_u4E8C_u53C9_u6811-21548502782193.gif"/> </div><br>
 
 ```java
 // 缓存中序遍历数组每个值对应的索引
@@ -370,11 +372,11 @@ public class TreeLinkNode {
 
 ① 如果一个节点的右子树不为空，那么该节点的下一个节点是右子树的最左节点；
 
-<div align="center"> <img src="pics/cb0ed469-27ab-471b-a830-648b279103c8.png" width="250"/> </div><br>
+<div align="center"> <img src="pics/_u4E8C_u53C9_u6811_u7684_u4E0B_.gif" width="250"/> </div><br>
 
 ② 否则，向上找第一个左链接指向的树包含该节点的祖先节点。
 
-<div align="center"> <img src="pics/e143f6da-d114-4ba4-8712-f65299047fa2.png" width="250"/> </div><br>
+<div align="center"> <img src="pics/_u4E8C_u53C9_u6811_u7684_u4E0B_1548504426508.gif" width="250"/> </div><br>
 
 ```java
 public TreeLinkNode GetNext(TreeLinkNode pNode) {
@@ -407,7 +409,8 @@ public TreeLinkNode GetNext(TreeLinkNode pNode) {
 
 in 栈用来处理入栈（push）操作，out 栈用来处理出栈（pop）操作。一个元素进入 in 栈之后，出栈的顺序被反转。当元素要出栈时，需要先进入 out 栈，此时元素出栈顺序再一次被反转，因此出栈顺序就和最开始入栈顺序是相同的，先进入的元素先退出，这就是队列的顺序。
 
-<div align="center"> <img src="pics/5acf7550-86c5-4c5b-b912-8ce70ef9c34e.png" width="400"/> </div><br>
+<div align="center"> <img src="pics/_u7528_u4E24_u4E2A_u6808_u5B9E_.gif" width="500"/> </div><br>
+
 
 ```java
 Stack<Integer> in = new Stack<Integer>();
@@ -443,7 +446,8 @@ public int pop() throws Exception {
 
 如果使用递归求解，会重复计算一些子问题。例如，计算 f(10) 需要计算 f(9) 和 f(8)，计算 f(9) 需要计算 f(8) 和 f(7)，可以看到 f(8) 被重复计算了。
 
-<div align="center"> <img src="pics/faecea49-9974-40db-9821-c8636137df61.jpg" width="300"/> </div><br>
+<div align="center"> <img src="pics/_u6590_u6CE2_u90A3_u5951_u6570_u5217.gif" width="400"/> </div><br>
+
 
 递归是将一个问题划分成多个子问题求解，动态规划也是如此，但是动态规划会把子问题的解缓存起来，从而避免重复求解子问题。
 
