@@ -1,9 +1,19 @@
+<!--| Ⅰ | Ⅱ | Ⅲ | Ⅳ | Ⅴ | Ⅵ | Ⅶ | Ⅷ | Ⅸ | Ⅹ |
+| :--------: | :---------: | :---------: | :---------: | :---------: | :---------:| :---------: | :-------: | :-------:| :------:|
+| 算法[:pencil2:](#pencil2-算法) | 操作系统[:computer:](#computer-操作系统)|网络[:cloud:](#cloud-网络) | 面向对象[:art:](#art-面向对象) |数据库[:floppy_disk:](#floppy_disk-数据库)| Java [:coffee:](#coffee-java)| 系统设计[:bulb:](#bulb-系统设计)| 工具[:wrench:](#wrench-工具)| 编码实践[:watermelon:](#watermelon-编码实践)| 后记[:memo:](#memo-后记) | -->
+
+| &nbsp;&nbsp;&nbsp;算法&nbsp;&nbsp;&nbsp; | 操作系统 | &nbsp;&nbsp;&nbsp;网络&nbsp;&nbsp;&nbsp; | 面向对象 | &nbsp;&nbsp;数据库&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;Java&nbsp;&nbsp;&nbsp; | 系统设计 | &nbsp;&nbsp;&nbsp;工具&nbsp;&nbsp;&nbsp; | 编码实践 | &nbsp;&nbsp;&nbsp;后记&nbsp;&nbsp;&nbsp; |
+| :--------: | :---------: | :---------: | :---------: | :---------: | :---------:| :---------: | :-------: | :-------:| :------:|
+| [:pencil2:](#pencil2-算法) | [:computer:](#computer-操作系统)|[:cloud:](#cloud-网络) | [:art:](#art-面向对象) |[:floppy_disk:](#floppy_disk-数据库)|  [:coffee:](#coffee-java)| [:bulb:](#bulb-系统设计)| [:wrench:](#wrench-工具)| [:watermelon:](#watermelon-编码实践)| [:memo:](#memo-后记) | 
+
+<br>
+
 <div align="center">
     <img src="other/LogoMakr_0zpEzN.png" width="200px">
     <br>
     <a href="https://cyc2018.github.io/CS-Notes"> <img src="https://img.shields.io/badge/>-read-4ab8a1.svg"></a>  <a href="https://xiaozhuanlan.com/CyC2018"> <img src="https://img.shields.io/badge/_-more-4ab8a1.svg"></a> 
     <br> <br>
-    本项目包含了技术面试必备的基础知识，这些内容是从众多计算机经典书籍总结而来，浅显易懂，你不需要花很长的时间去阅读和理解成堆的技术书籍就可以快速掌握，从而节省宝贵的面试复习时间。你也可以考虑订阅 <a href="https://xiaozhuanlan.com/CyC2018">面试进阶专栏</a>，包含了学习指导和面试技巧，让你更轻松拿到满意的 Offer。
+    本项目包含了技术面试必备的基础知识，浅显易懂，你不需要花很长的时间去阅读和理解成堆的技术书籍就可以快速掌握这些知识，从而节省宝贵的面试复习时间。你也可以订阅 <a href="https://xiaozhuanlan.com/CyC2018">面试进阶专栏</a>，包含了学习指导和面试技巧，让你更轻松拿到满意的 Offer。
 </div> 
 
 <br>
@@ -25,7 +35,7 @@
 - [HTTP](https://github.com/CyC2018/CS-Notes/blob/master/docs/notes/HTTP.md)
 - [Socket](https://github.com/CyC2018/CS-Notes/blob/master/docs/notes/Socket.md)
 
-## :unlock: 面向对象
+## :art: 面向对象
 
 - [设计模式](https://github.com/CyC2018/CS-Notes/blob/master/docs/notes/设计模式.md)
 - [面向对象思想](https://github.com/CyC2018/CS-Notes/blob/master/docs/notes/面向对象思想.md)
@@ -62,28 +72,32 @@
 - [构建工具](https://github.com/CyC2018/CS-Notes/blob/master/docs/notes/构建工具.md)
 - [正则表达式](https://github.com/CyC2018/CS-Notes/blob/master/docs/notes/正则表达式.md)
 
-## :mag_right: 编码实践 
+## :watermelon: 编码实践 
 
 - [代码可读性](https://github.com/CyC2018/CS-Notes/blob/master/docs/notes/代码可读性.md)
 - [代码风格规范](https://github.com/CyC2018/CS-Notes/blob/master/docs/notes/代码风格规范.md)
 
 ## :memo: 后记 
 
-### QQ 群
+### 内推信息
 
-为大家提供一个学习交流平台，在这里你可以自由地讨论技术问题。
+[Job-Recommend](https://github.com/CyC2018/Job-Recommend)
 
-<img src="https://github.com/CyC2018/CS-Notes/raw/master/other/group1.png" width="200px"></br>
+### 专栏
+
+[面试进阶指南](https://xiaozhuanlan.com/CyC2018)
 
 ### 知识星球
 
 想要向我提问关于学习和求职方面的建议？来知识星球，你的每个提问我都会认真回答。
 
-[🎓](other/Planet.md)
+[知识星球](other/Planet.md)
 
-### 内推信息
+### QQ 群
 
-[🔎](https://github.com/CyC2018/Job-Recommend)
+为大家提供一个学习交流平台，在这里你可以自由地讨论技术问题。
+
+<img src="https://github.com/CyC2018/CS-Notes/raw/master/other/group1.png" width="200px"></br>
 
 ### 排版
 
