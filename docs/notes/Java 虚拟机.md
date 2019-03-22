@@ -1,4 +1,3 @@
-[🍉 点击订阅面试进阶专栏 ](https://xiaozhuanlan.com/CyC2018)
 <!-- GFM-TOC -->
 * [一、运行时数据区域](#一运行时数据区域)
     * [程序计数器](#程序计数器)
@@ -31,7 +30,7 @@
 
 # 一、运行时数据区域
 
-<div align="center"> <img src="pics/11548742157520.gif" width="450"/> </div><br>
+<div align="center"> <img src="https://gitee.com/CyC2018/CS-Notes/raw/master/docs/pics/83e9c5ed-35a1-41fd-b0dd-ce571969b5f3_200.png" width="500px"> </div><br>
 
 ## 程序计数器
 
@@ -41,7 +40,7 @@
 
 每个 Java 方法在执行的同时会创建一个栈帧用于存储局部变量表、操作数栈、常量池引用等信息。从方法调用直至执行完成的过程，就对应着一个栈帧在 Java 虚拟机栈中入栈和出栈的过程。
 
-<div align="center"> <img src="pics/11548741556940.gif" width="500"/> </div><br>
+<div align="center"> <img src="https://gitee.com/CyC2018/CS-Notes/raw/master/docs/pics/ff5b89ac-798e-4fbc-b0ce-da2fc2358570.jpg"/> </div><br>
 
 可以通过 -Xss 这个虚拟机参数来指定每个线程的 Java 虚拟机栈内存大小：
 
@@ -60,8 +59,7 @@ java -Xss512M HackTheJava
 
 本地方法一般是用其它语言（C、C++ 或汇编语言等）编写的，并且被编译为基于本机硬件和操作系统的程序，对待这些方法需要特别处理。
 
-
-<div align="center"> <img src="pics/11548742010310.gif"/> </div><br>
+<div align="center"> <img src="https://gitee.com/CyC2018/CS-Notes/raw/master/docs/pics/1_2001550547261811.png"/> </div><br>
 
 ## 堆
 
@@ -104,9 +102,7 @@ Class 文件中的常量池（编译器生成的字面量和符号引用）会�
 
 # 二、垃圾收集
 
-垃圾收集主要是针对堆和方法区进行。
-
-程序计数器、虚拟机栈和本地方法栈这三个区域属于线程私有的，只存在于线程的生命周期内，线程结束之后也会消失，因此不需要对这三个区域进行垃圾回收。
+垃圾收集主要是针对堆和方法区进行。程序计数器、虚拟机栈和本地方法栈这三个区域属于线程私有的，只存在于线程的生命周期内，线程结束之后就会消失，因此不需要对这三个区域进行垃圾回收。
 
 ## 判断一个对象是否可被回收
 
@@ -114,7 +110,7 @@ Class 文件中的常量池（编译器生成的字面量和符号引用）会�
 
 为对象添加一个引用计数器，当对象增加一个引用时计数器加 1，引用失效时计数器减 1。引用计数为 0 的对象可被回收。
 
-在两个对象出现循环引用的情况下，此时引用计数器永远不为 0，导致无法对它们进行回收。正因为循环引用的存在，因此 Java 虚拟机不使用引用计数算法。
+在两个对象出现循环引用的情况下，此时引用计数器永远不为 0，导致无法对它们进行回收。正是因为循环引用的存在，因此 Java 虚拟机不使用引用计数算法。
 
 ```java
 public class Test {
@@ -126,22 +122,27 @@ public class Test {
         Test b = new Test();
         a.instance = b;
         b.instance = a;
+        a = null;
+        b = null;
+        doSomething();
     }
 }
 ```
 
+在上述代码中,a与b引用的对象实例互相持有了对象的引用,因此当我们把对a对象与b对象的引用去除之后,由于两个对象还存在互相之间的引用,导致两个Test对象无法被回收。
+
 ### 2. 可达性分析算法
 
-将 GC Roots 作为起始点进行搜索，可达的对象都是存活的，不可达的对象可被回收。
+以 GC Roots 为起始点进行搜索，可达的对象都是存活的，不可达的对象可被回收。
 
-Java 虚拟机使用该算法来判断对象是否可被回收，在 Java 中 GC Roots 一般包含以下内容：
+Java 虚拟机使用该算法来判断对象是否可被回收，GC Roots 一般包含以下内容：
 
 - 虚拟机栈中局部变量表中引用的对象
 - 本地方法栈中 JNI 中引用的对象
 - 方法区中类静态属性引用的对象
 - 方法区中的常量引用的对象
 
-<div align="center"> <img src="pics/11548742505541.gif"/> </div><br>
+<div align="center"> <img src="https://gitee.com/CyC2018/CS-Notes/raw/master/docs/pics/6dd28bfc-6ef7-47cb-af50-a681ebc1bbaa.png"/> </div><br>
 
 ### 3. 方法区的回收
 
@@ -149,9 +150,9 @@ Java 虚拟机使用该算法来判断对象是否可被回收，在 Java 中 GC
 
 主要是对常量池的回收和对类的卸载。
 
-为了避免内存溢出，在大量使用反射、动态代理的场景都需要虚拟机具备类卸载功能。
+为了避免内存溢出，在大量使用反射和动态代理的场景都需要虚拟机具备类卸载功能。
 
-类的卸载条件很多，需要满足以下三个条件，但是满足了也不一定会被卸载：
+类的卸载条件很多，需要满足以下三个条件，并且满足了条件也不一定会被卸载：
 
 - 该类所有的实例都已经被回收，此时堆中不存在该类的任何实例。
 - 加载该类的 ClassLoader 已经被回收。
@@ -159,7 +160,7 @@ Java 虚拟机使用该算法来判断对象是否可被回收，在 Java 中 GC
 
 ### 4. finalize()
 
-类似 C++ 的析构函数，用于关闭外部资源。try-finally 等方式可以做的更好，并且该方法运行代价很高，不确定性大，无法保证各个对象的调用顺序，因此最好不要使用。
+类似 C++ 的析构函数，用于关闭外部资源。但是 try-finally 等方式可以做得更好，并且该方法运行代价很高，不确定性大，无法保证各个对象的调用顺序，因此最好不要使用。
 
 当一个对象可被回收时，如果需要执行该对象的 finalize() 方法，那么就有可能在该方法中让对象重新被引用，从而实现自救。自救只能进行一次，如果回收的对象之前调用了 finalize() 方法自救，后面回收时不会再调用该方法。
 
@@ -221,7 +222,8 @@ obj = null;
 
 ### 1. 标记 - 清除
 
-<div align="center"> <img src="pics/11548743021625.gif"/> </div><br>
+<div align="center"> <img src="https://gitee.com/CyC2018/CS-Notes/raw/master/docs/pics/3_2001550547558008.png"/> </div><br>
+
 
 标记要回收的对象，然后清除。
 
@@ -232,13 +234,15 @@ obj = null;
 
 ### 2. 标记 - 整理
 
-<div align="center"> <img src="pics/11548743193273.gif"/> </div><br>
+
+<div align="center"> <img src="https://gitee.com/CyC2018/CS-Notes/raw/master/docs/pics/2_2001550547456403.png"/> </div><br>
+
 
 让所有存活的对象都向一端移动，然后直接清理掉端边界以外的内存。
 
 ### 3. 复制
 
-<div align="center"> <img src="pics/11548743457272.gif"/> </div><br>
+<div align="center"> <img src="https://gitee.com/CyC2018/CS-Notes/raw/master/docs/pics/4_2001550547640585.png"/> </div><br>
 
 将内存划分为大小相等的两块，每次只使用其中一块，当这一块内存用完了就将还存活的对象复制到另一块上面，然后再把使用过的内存空间进行一次清理。
 
@@ -259,7 +263,7 @@ HotSpot 虚拟机的 Eden 和 Survivor 大小比例默认为 8:1，保证了内�
 
 ## 垃圾收集器
 
-<div align="center"> <img src="pics/c625baa0-dde6-449e-93df-c3a67f2f430f.jpg" width=""/> </div><br>
+<div align="center"> <img src="https://gitee.com/CyC2018/CS-Notes/raw/master/docs/pics/c625baa0-dde6-449e-93df-c3a67f2f430f.jpg" width=""/> </div><br>
 
 以上是 HotSpot 虚拟机中的 7 个垃圾收集器，连线表示垃圾收集器可以配合使用。
 
@@ -268,23 +272,23 @@ HotSpot 虚拟机的 Eden 和 Survivor 大小比例默认为 8:1，保证了内�
 
 ### 1. Serial 收集器
 
-<div align="center"> <img src="pics/22fda4ae-4dd5-489d-ab10-9ebfdad22ae0.jpg" width=""/> </div><br>
+<div align="center"> <img src="https://gitee.com/CyC2018/CS-Notes/raw/master/docs/pics/22fda4ae-4dd5-489d-ab10-9ebfdad22ae0.jpg" width=""/> </div><br>
 
 Serial 翻译为串行，也就是说它以串行的方式执行。
 
 它是单线程的收集器，只会使用一个线程进行垃圾收集工作。
 
-它的优点是简单高效，对于单个 CPU 环境来说，由于没有线程交互的开销，因此拥有最高的单线程收集效率。
+它的优点是简单高效，在单个 CPU 环境下，由于没有线程交互的开销，因此拥有最高的单线程收集效率。
 
-它是 Client 模式下的默认新生代收集器，因为在该应用场景下内存一般来说不会很大。它收集几十兆甚至一两百兆的新生代停顿时间可以控制在一百多毫秒以内，只要不是太频繁，这点停顿时间是可以接受的。
+它是 Client 场景下的默认新生代收集器，因为在该场景下内存一般来说不会很大。它收集一两百兆垃圾的停顿时间可以控制在一百多毫秒以内，只要不是太频繁，这点停顿时间是可以接受的。
 
 ### 2. ParNew 收集器
 
-<div align="center"> <img src="pics/81538cd5-1bcf-4e31-86e5-e198df1e013b.jpg" width=""/> </div><br>
+<div align="center"> <img src="https://gitee.com/CyC2018/CS-Notes/raw/master/docs/pics/81538cd5-1bcf-4e31-86e5-e198df1e013b.jpg" width=""/> </div><br>
 
 它是 Serial 收集器的多线程版本。
 
-是 Server 模式下首选的新生代收集器，除了性能原因外，主要是因为除了 Serial 收集器，只有它能与 CMS 收集器配合工作。
+它是 Server 场景下默认的新生代收集器，除了性能原因外，主要是因为除了 Serial 收集器，只有它能与 CMS 收集器配合使用。
 
 ### 3. Parallel Scavenge 收集器
 
@@ -300,16 +304,16 @@ Serial 翻译为串行，也就是说它以串行的方式执行。
 
 ### 4. Serial Old 收集器
 
-<div align="center"> <img src="pics/08f32fd3-f736-4a67-81ca-295b2a7972f2.jpg" width=""/> </div><br>
+<div align="center"> <img src="https://gitee.com/CyC2018/CS-Notes/raw/master/docs/pics/08f32fd3-f736-4a67-81ca-295b2a7972f2.jpg" width=""/> </div><br>
 
-是 Serial 收集器的老年代版本，也是给 Client 模式下的虚拟机使用。如果用在 Server 模式下，它有两大用途：
+是 Serial 收集器的老年代版本，也是给 Client 场景下的虚拟机使用。如果用在 Server 场景下，它有两大用途：
 
 - 在 JDK 1.5 以及之前版本（Parallel Old 诞生以前）中与 Parallel Scavenge 收集器搭配使用。
 - 作为 CMS 收集器的后备预案，在并发收集发生 Concurrent Mode Failure 时使用。
 
 ### 5. Parallel Old 收集器
 
-<div align="center"> <img src="pics/278fe431-af88-4a95-a895-9c3b80117de3.jpg" width=""/> </div><br>
+<div align="center"> <img src="https://gitee.com/CyC2018/CS-Notes/raw/master/docs/pics/278fe431-af88-4a95-a895-9c3b80117de3.jpg" width=""/> </div><br>
 
 是 Parallel Scavenge 收集器的老年代版本。
 
@@ -317,7 +321,7 @@ Serial 翻译为串行，也就是说它以串行的方式执行。
 
 ### 6. CMS 收集器
 
-<div align="center"> <img src="pics/62e77997-6957-4b68-8d12-bfd609bb2c68.jpg" width=""/> </div><br>
+<div align="center"> <img src="https://gitee.com/CyC2018/CS-Notes/raw/master/docs/pics/62e77997-6957-4b68-8d12-bfd609bb2c68.jpg" width=""/> </div><br>
 
 CMS（Concurrent Mark Sweep），Mark Sweep 指的是标记 - 清除算法。
 
@@ -342,17 +346,17 @@ G1（Garbage-First），它是一款面向服务端应用的垃圾收集器，�
 
 堆被分为新生代和老年代，其它收集器进行收集的范围都是整个新生代或者老年代，而 G1 可以直接对新生代和老年代一起回收。
 
-<div align="center"> <img src="pics/4cf711a8-7ab2-4152-b85c-d5c226733807.png" width="600"/> </div><br>
+<div align="center"> <img src="https://gitee.com/CyC2018/CS-Notes/raw/master/docs/pics/4cf711a8-7ab2-4152-b85c-d5c226733807.png" width="600"/> </div><br>
 
 G1 把堆划分成多个大小相等的独立区域（Region），新生代和老年代不再物理隔离。
 
-<div align="center"> <img src="pics/9bbddeeb-e939-41f0-8e8e-2b1a0aa7e0a7.png" width="600"/> </div><br>
+<div align="center"> <img src="https://gitee.com/CyC2018/CS-Notes/raw/master/docs/pics/9bbddeeb-e939-41f0-8e8e-2b1a0aa7e0a7.png" width="600"/> </div><br>
 
 通过引入 Region 的概念，从而将原来的一整块内存空间划分成多个的小空间，使得每个小空间可以单独进行垃圾回收。这种划分方法带来了很大的灵活性，使得可预测的停顿时间模型成为可能。通过记录每个 Region 垃圾回收时间以及回收所获得的空间（这两个值是通过过去回收的经验获得），并维护一个优先列表，每次根据允许的收集时间，优先回收价值最大的 Region。
 
 每个 Region 都有一个 Remembered Set，用来记录该 Region 对象的引用对象所在的 Region。通过使用 Remembered Set，在做可达性分析的时候就可以避免全堆扫描。
 
-<div align="center"> <img src="pics/f99ee771-c56f-47fb-9148-c0036695b5fe.jpg" width=""/> </div><br>
+<div align="center"> <img src="https://gitee.com/CyC2018/CS-Notes/raw/master/docs/pics/f99ee771-c56f-47fb-9148-c0036695b5fe.jpg" width=""/> </div><br>
 
 如果不计算维护 Remembered Set 的操作，G1 收集器的运作大致可划分为以下几个步骤：
 
@@ -440,7 +444,7 @@ G1 把堆划分成多个大小相等的独立区域（Region），新生代和�
 
 ## 类的生命周期
 
-<div align="center"> <img src="pics/11548744140733.gif"/> </div><br>
+<div align="center"> <img src="https://gitee.com/CyC2018/CS-Notes/raw/master/docs/pics/303873db-0d11-4683-a43c-f319b7aef2b6.jpg"/> </div><br>
 
 包括以下 7 个阶段：
 
@@ -462,9 +466,10 @@ G1 把堆划分成多个大小相等的独立区域（Region），新生代和�
 
 加载过程完成以下三件事：
 
-- 通过一个类的全限定名来获取定义此类的二进制字节流。
-- 将这个字节流所代表的静态存储结构转化为方法区的运行时存储结构。
-- 在内存中生成一个代表这个类的 Class 对象，作为方法区这个类的各种数据的访问入口。
+- 通过类的完全限定名称获取定义该类的二进制字节流。
+- 将该字节流表示的静态存储结构转换为方法区的运行时存储结构。
+- 在内存中生成一个代表该类的 Class 对象，作为方法区中该类各种数据的访问入口。
+
 
 其中二进制字节流可以从以下方式中获取：
 
@@ -481,9 +486,7 @@ G1 把堆划分成多个大小相等的独立区域（Region），新生代和�
 
 类变量是被 static 修饰的变量，准备阶段为类变量分配内存并设置初始值，使用的是方法区的内存。
 
-实例变量不会在这阶段分配内存，它将会在对象实例化时随着对象一起分配在堆中。
-
-注意，实例化不是类加载的一个过程，类加载发生在所有实例化操作之前，并且类加载只进行一次，实例化可以进行多次。
+实例变量不会在这阶段分配内存，它会在对象实例化时随着对象一起被分配在堆中。应该注意到，实例化不是类加载的一个过程，类加载发生在所有实例化操作之前，并且类加载只进行一次，实例化可以进行多次。
 
 初始值一般为 0 值，例如下面的类变量 value 被初始化为 0 而不是 123。
 
@@ -491,7 +494,7 @@ G1 把堆划分成多个大小相等的独立区域（Region），新生代和�
 public static int value = 123;
 ```
 
-如果类变量是常量，那么会按照表达式来进行初始化，而不是赋值为 0。
+如果类变量是常量，那么它将初始化为表达式所定义的值而不是 0。例如下面的常量 value 被初始化为 123 而不是 0。
 
 ```java
 public static final int value = 123;
@@ -503,9 +506,15 @@ public static final int value = 123;
 
 其中解析过程在某些情况下可以在初始化阶段之后再开始，这是为了支持 Java 的动态绑定。
 
+<div data="补充为什么可以支持动态绑定 --> <--"></div>
+
 ### 5. 初始化
 
-初始化阶段才真正开始执行类中定义的 Java 程序代码。初始化阶段即虚拟机执行类构造器 &lt;clinit>() 方法的过程。在准备阶段，类变量已经赋过一次系统要求的初始值，而在初始化阶段，根据程序员通过程序制定的主观计划去初始化类变量和其它资源。
+<div data="modify -->"></div>
+
+初始化阶段才真正开始执行类中定义的 Java 程序代码。初始化阶段是虚拟机执行类构造器 &lt;clinit>() 方法的过程。在准备阶段，类变量已经赋过一次系统要求的初始值，而在初始化阶段，根据程序员通过程序制定的主观计划去初始化类变量和其它资源。
+
+在准备阶段，已经为类变量分配了系统所需的初始值，并且在初始化阶段，根据程序员通过程序进行的主观计划来初始化类变量和其他资源。
 
 &lt;clinit>() 是由编译器自动收集类中所有类变量的赋值动作和静态语句块中的语句合并产生的，编译器收集的顺序由语句在源文件中出现的顺序决定。特别注意的是，静态语句块只能访问到定义在它之前的类变量，定义在它之后的类变量只能赋值，不能访问。例如以下代码：
 
@@ -602,23 +611,25 @@ System.out.println(ConstClass.HELLOWORLD);
 
 - 应用程序类加载器（Application ClassLoader）这个类加载器是由 AppClassLoader（sun.misc.Launcher$AppClassLoader）实现的。由于这个类加载器是 ClassLoader 中的 getSystemClassLoader() 方法的返回值，因此一般称为系统类加载器。它负责加载用户类路径（ClassPath）上所指定的类库，开发者可以直接使用这个类加载器，如果应用程序中没有自定义过自己的类加载器，一般情况下这个就是程序中默认的类加载器。
 
+<div data="modify <--"></div>
+
 ## 双亲委派模型
 
-应用程序都是由三种类加载器相互配合进行加载的，如果有必要，还可以加入自己定义的类加载器。
+应用程序是由三种类加载器互相配合从而实现类加载，除此之外还可以加入自己定义的类加载器。
 
-下图展示的类加载器之间的层次关系，称为类加载器的双亲委派模型（Parents Delegation Model）。该模型要求除了顶层的启动类加载器外，其余的类加载器都要有自己的父类加载器。这里类加载器之间的父子关系一般通过组合（Composition）关系来实现，而不是通过继承（Inheritance）的关系实现。
+下图展示了类加载器之间的层次关系，称为双亲委派模型（Parents Delegation Model）。该模型要求除了顶层的启动类加载器外，其它的类加载器都要有自己的父类加载器。类加载器之间的父子关系一般通过组合关系（Composition）来实现，而不是继承关系（Inheritance）。
 
-<div align="center"> <img src="pics/class_loader_hierarchy.png" width="600"/> </div><br>
+<div align="center"> <img src="https://gitee.com/CyC2018/CS-Notes/raw/master/docs/pics/805812fa-6ab5-4b8f-a0aa-3bdcadaa829d.png"/> </div><br>
 
 ### 1. 工作过程
 
-一个类加载器首先将类加载请求传送到父类加载器，只有当父类加载器无法完成类加载请求时才尝试自己加载。
+一个类加载器首先将类加载请求转发到父类加载器，只有当父类加载器无法完成时才尝试自己加载。
 
 ### 2. 好处
 
 使得 Java 类随着它的类加载器一起具有一种带有优先级的层次关系，从而使得基础类得到统一。
 
-例如 java.lang.Object 存放在 rt.jar 中，如果编写另外一个 java.lang.Object 的类并放到 ClassPath 中，程序可以编译通过。由于双亲委派模型的存在，所以在 rt.jar 中的 Object 比在 ClassPath 中的 Object 优先级更高，这是因为 rt.jar 中的 Object 使用的是启动类加载器，而 ClassPath 中的 Object 使用的是应用程序类加载器。rt.jar 中的 Object 优先级更高，那么程序中所有的 Object 都是这个 Object。
+例如 java.lang.Object 存放在 rt.jar 中，如果编写另外一个 java.lang.Object 并放到 ClassPath 中，程序可以编译通过。由于双亲委派模型的存在，所以在 rt.jar 中的 Object 比在 ClassPath 中的 Object 优先级更高，这是因为 rt.jar 中的 Object 使用的是启动类加载器，而 ClassPath 中的 Object 使用的是应用程序类加载器。rt.jar 中的 Object 优先级更高，那么程序中所有的 Object 都是这个 Object。
 
 ### 3. 实现
 
@@ -672,7 +683,7 @@ public abstract class ClassLoader {
 
 FileSystemClassLoader 是自定义类加载器，继承自 java.lang.ClassLoader，用于加载文件系统上的类。它首先根据类的全名在文件系统上查找类的字节代码文件（.class 文件），然后读取该文件内容，最后通过 defineClass() 方法来把这些字节代码转换成 java.lang.Class 类的实例。
 
-java.lang.ClassLoader 的 loadClass() 实现了双亲委派模型的逻辑，因此自定义类加载器一般不去重写它，但是需要重写 findClass() 方法。
+java.lang.ClassLoader 的 loadClass() 实现了双亲委派模型的逻辑，自定义类加载器一般不去重写它，但是需要重写 findClass() 方法。
 
 ```java
 public class FileSystemClassLoader extends ClassLoader {
@@ -733,3 +744,9 @@ public class FileSystemClassLoader extends ClassLoader {
 - [深入探讨 Java 类加载器](https://www.ibm.com/developerworks/cn/java/j-lo-classloader/index.html#code6)
 - [Guide to WeakHashMap in Java](http://www.baeldung.com/java-weakhashmap)
 - [Tomcat example source code file (ConcurrentCache.java)](https://alvinalexander.com/java/jwarehouse/apache-tomcat-6.0.16/java/org/apache/el/util/ConcurrentCache.java.shtml)
+
+
+
+
+</br><div align="center">⭐️欢迎关注我的公众号 CyC2018，在公众号后台回复关键字 📚 **资料** 可领取复习大纲，这份大纲是我花了一整年时间整理的面试知识点列表，不仅系统整理了面试知识点，而且标注了各个知识点的重要程度，从而帮你理清多而杂的面试知识点。可以说我基本是按照这份大纲来进行复习的，这份大纲对我拿到了 BAT 头条等 Offer 起到很大的帮助。你们完全可以和我一样根据大纲上列的知识点来进行复习，就不用看很多不重要的内容，也可以知道哪些内容很重要从而多安排一些复习时间。</div></br>
+<div align="center"><img width="180px" src="https://cyc-1256109796.cos.ap-guangzhou.myqcloud.com/%E5%85%AC%E4%BC%97%E5%8F%B7.jpg"></img></div>
