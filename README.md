@@ -15,7 +15,7 @@
     <br> <br>
 </div> 
 
-🎓 本项目包含了技术面试必备的基础知识，内容浅显易懂，你不需要花很长的时间去阅读和理解成堆的技术书籍就可以快速掌握这些知识，从而节省宝贵的面试复习时间。
+<!--🎓 
 
 🎨 推荐使用 https://cyc2018.github.io/CS-Notes 进行阅读，从而获得更好的阅读体验。如果访问速度比较慢，可以考虑国内的 http://cyc2018.gitee.io/cs-notes/ 。
 
@@ -26,7 +26,7 @@
 <div align="center">
     <img src="https://cyc-1256109796.cos.ap-guangzhou.myqcloud.com/%E5%85%AC%E4%BC%97%E5%8F%B7.jpg" width="200px">
 </div>
-
+-->
 
 ## :pencil2: 算法
 
@@ -165,5 +165,8 @@ Power by [logomakr](https://logomakr.com/).
 </a>
 <a href="https://github.com/yanglbme">
 ​    <img src="https://avatars1.githubusercontent.com/u/21008209?s=400&v=4" width="50px">
+</a>
+<a href="https://github.com/OOCZC">
+​    <img src="https://avatars1.githubusercontent.com/u/11623828?s=400&v=4" width="50px">
 </a>
 

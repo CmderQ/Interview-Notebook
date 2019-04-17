@@ -2,7 +2,7 @@
 * [一、线程状态转换](#一线程状态转换)
     * [新建（New）](#新建new)
     * [可运行（Runnable）](#可运行runnable)
-    * [阻塞（Blocking）](#阻塞blocking)
+    * [阻塞（Blocked）](#阻塞blocked)
     * [无限期等待（Waiting）](#无限期等待waiting)
     * [限期等待（Timed Waiting）](#限期等待timed-waiting)
     * [死亡（Terminated）](#死亡terminated)
