@@ -20,7 +20,7 @@
         display: none;
     }
 
-    h1 + ul {
+    h1+ul {
         display: block !important;
     }
 
@@ -66,8 +66,25 @@
 
     .markdown-section pre>code {
         font-family: Consolas, Roboto Mono, Monaco, courier, monospace !important;
-        /*font-size: .9rem !important;*/
     }
+
+    @media (min-width:600px) {
+        .markdown-section pre>code {
+            font-size: .9rem !important;
+        }
+    }
+
+    @media (max-width:600px) {
+        .markdown-section pre>code {
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        pre:after {
+            content: "" !important;
+        }
+    }
+
 
     /*.anchor span {
     color: rgb(66, 185, 131);
@@ -81,8 +98,9 @@
         color: #42b983;
     }
 
-    .markdown-section img {
-        box-shadow: 7px 9px 10px #aaa !important;
+    .markdown-section > div > img,
+    .markdown-section pre {
+        box-shadow: 2px 2px 20px 6px #ddd !important;
     }
 
     pre {
@@ -102,12 +120,15 @@
             padding-left: 0px !important;
             padding-right: 0px !important;
         }
+
+        .docsify-copy-code-button {
+            display: none;
+        }
     }
 
     .markdown-section pre {
         padding-left: 0 !important;
         padding-right: 0px !important;
-        box-shadow: 2px 1px 20px 2px #aaa;
     }
     </style>
     <style type="text/css">
@@ -217,6 +238,32 @@
         transform: rotate(2deg);
     }
 
+    /*黑色*/
+    .token.function,
+    .token.operator,
+    .token.class-name {
+        color: #2C3E50;
+    }
+
+    /*深蓝加粗*/
+    .token.keyword {
+        color: #124363;
+        font-weight: bold;   
+    }
+
+
+    /*浅蓝*/
+    .token.property,
+    .token.tag,
+    .token.boolean,
+    .token.number,
+    .token.function-name,
+    .token.constant,
+    .token.symbol,
+    .token.deleted {
+        color: #2980B9;
+    }
+
     .token.comment,
     .token.block-comment,
     .token.prolog,
@@ -229,28 +276,17 @@
         color: #5F6364;
     }
 
-    .token.property,
-    .token.tag,
-    .token.boolean,
-    .token.number,
-    .token.function-name,
-    .token.constant,
-    .token.symbol,
-    .token.deleted {
-        color: #c92c2c;
-    }
 
     .token.selector,
     .token.attr-name,
     .token.string,
     .token.char,
-    .token.function,
     .token.builtin,
     .token.inserted {
-        color: #2f9c0a;
+        color: #1ABC9C;
+        font-weight: bold;   
     }
 
-    .token.operator,
     .token.entity,
     .token.url,
     .token.variable {
@@ -259,9 +295,7 @@
     }
 
     .token.atrule,
-    .token.attr-value,
-    .token.keyword,
-    .token.class-name {
+    .token.attr-value {
         color: #1990b8;
     }
 
@@ -369,8 +403,7 @@
     <script src="https://cyc-1256109796.cos.ap-guangzhou.myqcloud.com/prism-bash.min.js"></script>
     <script src="https://cyc-1256109796.cos.ap-guangzhou.myqcloud.com/prism-sql.min.js"></script>
     <script src="https://cyc-1256109796.cos.ap-guangzhou.myqcloud.com/zoom-image.min.js"></script>
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
+    <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
 </body>
 
 </html>
