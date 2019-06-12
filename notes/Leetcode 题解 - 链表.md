@@ -18,6 +18,8 @@
 
 [160. Intersection of Two Linked Lists (Easy)](https://leetcode.com/problems/intersection-of-two-linked-lists/description/)
 
+例如以下示例中 A 和 B 两个链表相交于 c1：
+
 ```html
 A:          a1 → a2
                     ↘
@@ -26,11 +28,25 @@ A:          a1 → a2
 B:    b1 → b2 → b3
 ```
 
-要求：时间复杂度为 O(N)，空间复杂度为 O(1)
+但是不会出现以下相交的情况，因为每个节点只有一个 next 指针，也就只能有一个后继节点，而以下示例中节点 c 有两个后继节点。
+
+```html
+A:          a1 → a2       d1 → d2
+                    ↘  ↗
+                      c
+                    ↗  ↘
+B:    b1 → b2 → b3        e1 → e2
+```
+
+
+
+要求时间复杂度为 O(N)，空间复杂度为 O(1)。如果不存在交点则返回 null。
 
 设 A 的长度为 a + c，B 的长度为 b + c，其中 c 为尾部公共部分长度，可知 a + c + b = b + c + a。
 
 当访问 A 链表的指针访问到链表尾部时，令它从链表 B 的头部开始访问链表 B；同样地，当访问 B 链表的指针访问到链表尾部时，令它从链表 A 的头部开始访问链表 A。这样就能控制访问 A 和 B 两个链表的指针能同时访问到交点。
+
+如果不存在交点，那么 a + b = b + a，以下实现代码中 l1 和 l2 会同时为 null，从而退出循环。
 
 ```java
 public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
@@ -329,5 +345,10 @@ public ListNode oddEvenList(ListNode head) {
 
 
 
-</br><div align="center">💡 </br></br> 更多精彩内容将发布在公众号 **CyC2018**，公众号提供了该项目的离线阅读版本，后台回复"下载" 即可领取。也提供了一份技术面试复习思维导图，不仅系统整理了面试知识点，而且标注了各个知识点的重要程度，从而帮你理清多而杂的面试知识点，后台回复"资料" 即可领取。我基本是按照这个思维导图来进行复习的，对我拿到了 BAT 头条等 Offer 起到很大的帮助。你们完全可以和我一样根据思维导图上列的知识点来进行复习，就不用看很多不重要的内容，也可以知道哪些内容很重要从而多安排一些复习时间。</div></br>
-<div align="center"><img width="180px" src="https://cyc-1256109796.cos.ap-guangzhou.myqcloud.com/%E5%85%AC%E4%BC%97%E5%8F%B7.jpg"></img></div>
+# 领取资料
+
+
+公众号提供了该项目的离线阅读版本，后台回复 "下载" 即可领取。也提供了一份技术面试复习大纲，不仅系统整理了面试知识点，而且标注了各个知识点的重要程度，从而帮你理清多而杂的面试知识点，后台回复 "大纲" 即可领取。我基本是按照这个大纲来进行复习的，对我拿到了 BAT 头条等 Offer 起到很大的帮助。你们完全可以和我一样根据大纲上列的知识点来进行复习，就不用看很多不重要的内容，也可以知道哪些内容很重要从而多安排一些复习时间。另外，如果你想和我交流，可以在我的微信公众号后台留言。
+
+
+<div align="center"><img width="580px" src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/other/公众号海报2.png"></img></div>
